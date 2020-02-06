@@ -1,6 +1,6 @@
 enablePlugins(ScalaJSPlugin)
 
-name := "Signal-K Alarm"
+name := "Signal-K-Alarm"
 
 version := "0.1"
 
