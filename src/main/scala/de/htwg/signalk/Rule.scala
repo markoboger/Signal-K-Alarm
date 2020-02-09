@@ -1,7 +1,6 @@
 package de.htwg.signalk
 
 import squants.space.Length
-import squants.time.Time
 
 case class OrderOperator[A<:Ordered[A]](){
   def above(static:A)(current:A):Boolean = { static<current}
