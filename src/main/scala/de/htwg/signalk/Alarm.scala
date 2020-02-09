@@ -87,19 +87,6 @@ object Alarm {
         List(List("sound"), List("warn"), List("log"), List("send"), List("deactivate"), List("reactivate"), List("reset"), List("restart")),
         List("#SoundAction", "#WarnAction", "#LogAction", "#SendAction", "#DeactivateAction", "#ReactivateAction", "#ResetAction", "#RestartAction"))
     }
-    val sp = new RuleParser
-    val result = sp.parseAll( sp.rule ,"When timer is -19:59")
-    println(result.get)
   }
 }
-class RuleParser extends RegexParsers {
-  def timeOperator ="timer" | "time"
-  def sign = "-"
-  def hour ="[0-1]*[0-9]".r | "2[0-3]".r
-  def minute = "[0-5][0-9]".r
-  def timeClause  = timeOperator~"is"~opt(sign)~hour~":"~minute
-  def valueOperator="value"~"of" | "distance"~"to"
-  def valueType = "Depth" | "TWA"
-  def valueClause = valueOperator ~ valueType
-  def rule = "When" ~ timeClause | valueClause ^^ { _.toString }
-}
+
