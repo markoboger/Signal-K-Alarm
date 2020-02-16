@@ -23,7 +23,7 @@ object Alarm {
 
 
   def main(args: Array[String]): Unit = {
-    $(dom.document).ready{ () => {
+    /*$(dom.document).ready{ () => {
         selectionChanged
         $("select").change(() => {selectionChanged})
       }
@@ -86,7 +86,7 @@ object Alarm {
       switchOnChoices("#ActionSelector",
         List(List("sound"), List("warn"), List("log"), List("send"), List("deactivate"), List("reactivate"), List("reset"), List("restart")),
         List("#SoundAction", "#WarnAction", "#LogAction", "#SendAction", "#DeactivateAction", "#ReactivateAction", "#ResetAction", "#RestartAction"))
-    }
+    }*/
   }
 }
 
