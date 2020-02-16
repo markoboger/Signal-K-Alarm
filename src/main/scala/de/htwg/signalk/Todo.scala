@@ -18,29 +18,42 @@ object Todo extends {
 
   @js.native
   trait DemoVue extends Vue{
-    var title:String=js.native
-    var n:Double=js.native
-    var todos:js.Array[DemoVueTodo]=js.native
+    var rules:js.Array[RuleVueComponent]=js.native
   }
 
   type DemoVueMethod=js.ThisFunction0[DemoVue,_]
 
   @js.native
-  trait DemoVueTodo extends js.Object{
-    var done:Boolean=js.native
+  trait RuleVueComponent extends js.Object{
+    var active:Boolean=js.native
     var content:String=js.native
   }
 
-  object DemoVueTodo{
-    def apply(done:Boolean,content:String)=literal(done=done,content=content).asInstanceOf[DemoVueTodo]
+  object RuleVueComponent{
+    def apply(active:Boolean,content:String)=literal(active=active,content=content).asInstanceOf[RuleVueComponent]
   }
 
   @JSExport
-  // we return the DemoVue so we can use it back in JS
-  // could have returned raw Vue of course
   def main():DemoVue = {
 
-    val tasks=js.Array("Learn JavaScript","Learn Vue.js","Learn Scala.js", "Build Alarm")
+    val rules=js.Array("When timer is -0:05, sound Beep once, warn 'Start in 5 min'",
+    "When timer is -0:04, sound Beep twice, warn 'Start in 4 min'",
+    "When timer is -0:01, sound Beep three times, warn 'Start in 1 min'",
+    "When timer is  0:00, sound Gong once, warn 'Start now', reset Timer(-0:05), restart Timer",
+
+    "When value of Depth is below 10 m, sound Beep once, warn 'Entering shallow waters', deactivate",
+    "When value of Depth is below 2.50 m, sound	LongBeep twice, warn 'Shallow water', reacitvate",
+    "When value of Log is above 1000 nm, sound Beep three times, warn 'Check Oil', log",
+    "When value of Fuel is below 20%, warn 'Fuel is low', reactivate",
+    "When value of Fuel is below 10%, sound Beep once, warn 'Refuel'",
+    "When value of TWA is outside 150 and 210, sound	Alarm1	3 min,warn 'Wind direction has changed', reactivate",
+    "When distance to Marker17 is below	1 nm, sound  Beep once, warn 'Approaching Marker 17', deactivate",
+    "When distance to Anker is above 100 m, sound Alarm1	until checked, warn 'Anker drifting', reactivate",
+
+    "When timer is 0:20 sound Beep once, warn 'Time for Lookout' reset Timer, start Timer",
+      "When time is 0:00 reset Daylog",
+    "When value of Battery is below	20%, send 'Charge Battery' to me, reactivate after 1:00",
+    "When value of TWS is above 40kn, send 'Boat in Storm' to me, reactivate after 1:00)")
     //
     def ts=new java.util.Date().toString
 
@@ -54,11 +67,9 @@ object Todo extends {
     )
 
     val demo = new Vue(
-      literal(el="#demo",
+      literal(el="#AlarmRuleEditor",
         data=literal(
-          message="Hello Vue.js!!!!!",
-          title="Todo App",
-          todos=tasks.map(content=>literal(done=content==tasks.head,content=content)),
+          rules=rules.map(content=>literal(active=content==rules.head,content=content)),
           expressionOptions=js.Array("value of", "distance to", "time", "timer"),
           valueOptions=js.Array("Depth", "Battery","Fuel","Performance","TWA","TWD", "SOG", "STW", "AWS", "TWS", "VMG", "Air", "Water"),
           operatorOptions = js.Array("below", "above", "between", "outside"),
@@ -77,17 +88,15 @@ object Todo extends {
           addresseeOptions = js.Array("me","Skipper","Obman","Owner","Service"),
           reactivateOptions = js.Array("after 0:01", "after 0:05", "after 1:00"),
           resetOptions = js.Array("Timer to 0:00", "Timer to -0:05", "Timer to -0:10","Timer to -0:20", "Timer to -1:00"),
-          barValue= 100,
-          n=0
         ),//,
         // js.ThisFunction would be fine, just trying to be more type specific
-        methods=literal(clickHandler=((demoVue:DemoVue)=>demoVue.n-=1):DemoVueMethod,
-          addTask=((demoVue:DemoVue)=>demoVue.todos.append(DemoVueTodo(false,s"new $ts"))):DemoVueMethod,
-          change1st=((demoVue:DemoVue)=>Vue.set(demoVue.todos, 0,DemoVueTodo(false,ts))):DemoVueMethod,
-          remove=((demoVue:DemoVue,idx:Int)=>Vue.delete(demoVue.todos,idx)):js.ThisFunction1[DemoVue,Int,_],
-          flipAll=((demoVue:DemoVue)=>demoVue.todos.foreach(td=>td.done= !td.done)):DemoVueMethod
+        methods=literal(
+          addRule=((demoVue:DemoVue)=>demoVue.rules.append(RuleVueComponent(true,s"new $ts"))):DemoVueMethod,
+          change1st=((demoVue:DemoVue)=>Vue.set(demoVue.rules, 0,RuleVueComponent(true,ts))):DemoVueMethod,
+          remove=((demoVue:DemoVue,idx:Int)=>Vue.delete(demoVue.rules,idx)):js.ThisFunction1[DemoVue,Int,_],
+          flipAll=((demoVue:DemoVue)=>demoVue.rules.foreach(td=>td.active= !td.active)):DemoVueMethod
         ),
-        computed=literal(todosComputed=(demoVue:DemoVue)=> demoVue.todos.map(_.content)),
+        computed=literal(todosComputed=(demoVue:DemoVue)=> demoVue.rules.map(_.content)),
         //
         filters=literal(reverse=((value:js.Any)=>value.toString.reverse),
           wrap=(value:js.Any,begin:String, end:String)=>begin+value.toString+end,
@@ -97,18 +106,8 @@ object Todo extends {
       )
     )
 
-    demo.$watch("title",(newValue:String, oldValue:String) => println("changed "+newValue))
-
+   // demo.$watch("title",(newValue:String, oldValue:String) => println("changed "+newValue))
     val demoVue=demo.asInstanceOf[DemoVue]
-
-    // filters declared above inline, can be also done as below
-    //    Vue.filter("reverse", (value:js.Any)=>value.toString.reverse)
-    //    Vue.filter("wrap", (value:js.Any,begin:String, end:String)=>begin+value.toString+end)
-
-    // println(js.JSON.stringify(demo.$data))
-
-    //demo.$log
-
     demoVue
   }
 }
