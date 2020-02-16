@@ -1,15 +1,11 @@
 package de.htwg.signalk
 
-import org.scalajs.dom
-
 import scalajs.js.annotation.JSExport
-import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
-import dom.ext.Ajax
-
 import scalajs.js
 import js.Dynamic.literal
 import com.felstar.scalajs.vue._
 import org.querki.jquery.$
+import org.scalajs.dom
 import org.scalajs.dom.raw.HTMLElement
 
 import js.annotation._
@@ -22,7 +18,7 @@ object RuleEditor extends {
     var rules:js.Array[Rule]=js.native
   }
 
-  type DemoVueMethod=js.ThisFunction0[RuleVue,_]
+  type RuleVueMethod=js.ThisFunction0[RuleVue,_]
 
   @js.native
   trait Rule extends js.Object{
@@ -91,12 +87,12 @@ object RuleEditor extends {
           resetOptions = js.Array("Timer to 0:00", "Timer to -0:05", "Timer to -0:10","Timer to -0:20", "Timer to -1:00"),
         ),
         methods=literal(
-          addRule=((demoVue:RuleVue)=>demoVue.rules.append(Rule(true,s"new $ts"))):DemoVueMethod,
-          change1st=((demoVue:RuleVue)=>Vue.set(demoVue.rules, 0,Rule(true,ts))):DemoVueMethod,
-          remove=((demoVue:RuleVue,idx:Int)=>Vue.delete(demoVue.rules,idx)):js.ThisFunction1[RuleVue,Int,_],
-          flipAll=((demoVue:RuleVue)=>demoVue.rules.foreach(td=>td.active= !td.active)):DemoVueMethod
+          addRule=((rv:RuleVue)=>rv.rules.append(Rule(true,s"new $ts"))):RuleVueMethod,
+          change1st=((rv:RuleVue)=>Vue.set(rv.rules, 0,Rule(true,ts))):RuleVueMethod,
+          remove=((rv:RuleVue,idx:Int)=>Vue.delete(rv.rules,idx)):js.ThisFunction1[RuleVue,Int,_],
+          flipAll=((rv:RuleVue)=>rv.rules.foreach(td=>td.active= !td.active)):RuleVueMethod
         ),
-        computed=literal(todosComputed=(demoVue:RuleVue)=> demoVue.rules.map(_.content)),
+        computed=literal(todosComputed=(rv:RuleVue)=> rv.rules.map(_.content)),
 
         filters=literal(reverse=((value:js.Any)=>value.toString.reverse),
           wrap=(value:js.Any,begin:String, end:String)=>begin+value.toString+end,
@@ -106,9 +102,85 @@ object RuleEditor extends {
       )
     )
 
+    def selectionChanged = {
+      val lengthTypes = List("Depth")
+      val percentageTypes = List("Battery", "Fuel", "Performance")
+      val degreeTypes = List("TWA", "TWD")
+      val speedTypes = List("TWS", "AWS", "SOG", "STW", "VMG")
+      val temperatureTypes = List("Air", "Water")
+      val markerTypes = List("Waypoint", "Photo", "Log Entry", "Marker")
+      val singleArgOps = List("below", "above")
+      val twoArgOps = List("between", "outside")
+      val actions = List("sound", "warn", "send", "log", "deactivate", "activate")
+      val timerActions = List("reset", "restart")
+      val sounds = List("Beep", "Alarm1", "Bell")
+      val repeats = List("once", "twice", "3 times", "max 20 sec", "max 1 min", "max 3 min", "max 10 min", "until checked")
+
+      def showOneOf(selection: String, choices: List[String]): Unit ={
+        for (choice <- choices if selection!=choice) {$(choice).hide}
+        $(selection).show
+      }
+
+      def mapSelectionToChoice(selection:String, pairs:List[Tuple2[List[String],String]]): String = {
+        for (pair <- pairs) {
+          if (pair._1.contains(selection)) {
+            return pair._2
+          }
+        }
+        "No match"
+      }
+
+      def switchOnChoices(selectorId:String, selector:List[List[String]],choices:List[String]) = {
+        val selection = $(selectorId+" :selected").valueString
+        val pairs = selector zip choices
+        val choice = mapSelectionToChoice(selection, pairs)
+        showOneOf(choice,choices)
+      }
+
+      switchOnChoices("#ExpressionSelector",
+        List(List("value of"), List("distance to"), List("time"), List("timer")),
+        List("#ValueExpression","#MarkerExpression", "#TimeExpression", "#TimerExpression"))
+
+      switchOnChoices("#ValueSelector",
+        List(lengthTypes, percentageTypes, degreeTypes, speedTypes, temperatureTypes),
+        List("#LengthExpression", "#PercentageExpression", "#DegreeExpression", "#SpeedExpression","#TemperatureExpression" ))
+
+      switchOnChoices("#DepthOperatorSelector",
+        List(singleArgOps,twoArgOps),
+        List("#DepthSingleArgExpression", "#DepthTwoArgExpression"))
+
+      switchOnChoices("#PercentageOperatorSelector",
+        List(singleArgOps,twoArgOps),
+        List("#PercentageSingleArgExpression", "#PercentageTwoArgExpression"))
+
+      switchOnChoices("#DegreeOperatorSelector",
+        List(singleArgOps,twoArgOps),
+        List("#DegreeSingleArgExpression", "#DegreeTwoArgExpression"))
+
+      switchOnChoices("#SpeedOperatorSelector",
+        List(singleArgOps,twoArgOps),
+        List("#SpeedSingleArgExpression", "#SpeedTwoArgExpression"))
+
+      switchOnChoices("#TemperatureOperatorSelector",
+        List(singleArgOps,twoArgOps),
+        List("#TemperatureSingleArgExpression", "#TemperatureTwoArgExpression"))
+
+      switchOnChoices("#DistanceOperatorSelector",
+        List(singleArgOps,twoArgOps),
+        List("#DistanceSingleArgExpression", "#DistanceTwoArgExpression"))
+
+      switchOnChoices("#ActionSelector",
+        List(List("sound"), List("warn"), List("log"), List("send"), List("deactivate"), List("reactivate"), List("reset"), List("restart")),
+        List("#SoundAction", "#WarnAction", "#LogAction", "#SendAction", "#DeactivateAction", "#ReactivateAction", "#ResetAction", "#RestartAction"))
+    }
+
     //ruleComponent.$watch("select",(newValue:String, oldValue:String) => println("changed "+newValue))
     val ruleVue=ruleComponent.asInstanceOf[RuleVue]
-    //$("select").change(() => {println("Selection changed!")})//selectionChanged})
+    $(dom.document).ready{ () => {
+      selectionChanged
+      $("select").change(() => {selectionChanged})
+    }
+    }
     ruleVue
   }
 }
