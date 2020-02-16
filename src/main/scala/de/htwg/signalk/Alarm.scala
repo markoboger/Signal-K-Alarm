@@ -14,8 +14,6 @@ object Alarm {
   val markerTypes = List("Waypoint", "Photo", "Log Entry", "Marker")
   val singleArgOps = List("below", "above")
   val twoArgOps = List("between", "outside")
-  val arg1 = List("10", "20", "30")
-  val arg2 = List("10", "20", "30")
   val actions = List("sound", "warn", "send", "log", "deactivate", "activate")
   val timerActions = List("reset", "restart")
   val sounds = List("Beep", "Alarm1", "Bell")
@@ -23,13 +21,26 @@ object Alarm {
 
 
   def main(args: Array[String]): Unit = {
-    /*$(dom.document).ready{ () => {
+/*    $(dom.document).ready{ () => {
         selectionChanged
         $("select").change(() => {selectionChanged})
       }
     }
 
     def selectionChanged = {
+      val lengthTypes = List("Depth")
+      val percentageTypes = List("Battery", "Fuel", "Performance")
+      val degreeTypes = List("TWA", "TWD")
+      val speedTypes = List("TWS", "AWS", "SOG", "STW", "VMG")
+      val temperatureTypes = List("Air", "Water")
+      val markerTypes = List("Waypoint", "Photo", "Log Entry", "Marker")
+      val singleArgOps = List("below", "above")
+      val twoArgOps = List("between", "outside")
+      val actions = List("sound", "warn", "send", "log", "deactivate", "activate")
+      val timerActions = List("reset", "restart")
+      val sounds = List("Beep", "Alarm1", "Bell")
+      val repeats = List("once", "twice", "3 times", "max 20 sec", "max 1 min", "max 3 min", "max 10 min", "until checked")
+
       def showOneOf(selection: String, choices: List[String]): Unit ={
         for (choice <- choices if selection!=choice) {$(choice).hide}
         $(selection).show

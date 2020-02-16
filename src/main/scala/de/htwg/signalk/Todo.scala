@@ -9,32 +9,33 @@ import dom.ext.Ajax
 import scalajs.js
 import js.Dynamic.literal
 import com.felstar.scalajs.vue._
+import org.querki.jquery.$
 import org.scalajs.dom.raw.HTMLElement
 
 import js.annotation._
 
-@JSExportTopLevel("example.Todo")
-object Todo extends {
+@JSExportTopLevel("signalk.RuleEditor")
+object RuleEditor extends {
 
   @js.native
-  trait DemoVue extends Vue{
-    var rules:js.Array[RuleVueComponent]=js.native
+  trait RuleVue extends Vue{
+    var rules:js.Array[Rule]=js.native
   }
 
-  type DemoVueMethod=js.ThisFunction0[DemoVue,_]
+  type DemoVueMethod=js.ThisFunction0[RuleVue,_]
 
   @js.native
-  trait RuleVueComponent extends js.Object{
+  trait Rule extends js.Object{
     var active:Boolean=js.native
     var content:String=js.native
   }
 
-  object RuleVueComponent{
-    def apply(active:Boolean,content:String)=literal(active=active,content=content).asInstanceOf[RuleVueComponent]
+  object Rule{
+    def apply(active:Boolean,content:String)=literal(active=active,content=content).asInstanceOf[Rule]
   }
 
   @JSExport
-  def main():DemoVue = {
+  def main():RuleVue = {
 
     val rules=js.Array("When timer is -0:05, sound Beep once, warn 'Start in 5 min'",
     "When timer is -0:04, sound Beep twice, warn 'Start in 4 min'",
@@ -54,7 +55,7 @@ object Todo extends {
       "When time is 0:00 reset Daylog",
     "When value of Battery is below	20%, send 'Charge Battery' to me, reactivate after 1:00",
     "When value of TWS is above 40kn, send 'Boat in Storm' to me, reactivate after 1:00)")
-    //
+
     def ts=new java.util.Date().toString
 
     Vue.component("my-component", literal(
@@ -66,7 +67,7 @@ object Todo extends {
     )
     )
 
-    val demo = new Vue(
+    val ruleComponent = new Vue(
       literal(el="#AlarmRuleEditor",
         data=literal(
           rules=rules.map(content=>literal(active=content==rules.head,content=content)),
@@ -88,16 +89,15 @@ object Todo extends {
           addresseeOptions = js.Array("me","Skipper","Obman","Owner","Service"),
           reactivateOptions = js.Array("after 0:01", "after 0:05", "after 1:00"),
           resetOptions = js.Array("Timer to 0:00", "Timer to -0:05", "Timer to -0:10","Timer to -0:20", "Timer to -1:00"),
-        ),//,
-        // js.ThisFunction would be fine, just trying to be more type specific
-        methods=literal(
-          addRule=((demoVue:DemoVue)=>demoVue.rules.append(RuleVueComponent(true,s"new $ts"))):DemoVueMethod,
-          change1st=((demoVue:DemoVue)=>Vue.set(demoVue.rules, 0,RuleVueComponent(true,ts))):DemoVueMethod,
-          remove=((demoVue:DemoVue,idx:Int)=>Vue.delete(demoVue.rules,idx)):js.ThisFunction1[DemoVue,Int,_],
-          flipAll=((demoVue:DemoVue)=>demoVue.rules.foreach(td=>td.active= !td.active)):DemoVueMethod
         ),
-        computed=literal(todosComputed=(demoVue:DemoVue)=> demoVue.rules.map(_.content)),
-        //
+        methods=literal(
+          addRule=((demoVue:RuleVue)=>demoVue.rules.append(Rule(true,s"new $ts"))):DemoVueMethod,
+          change1st=((demoVue:RuleVue)=>Vue.set(demoVue.rules, 0,Rule(true,ts))):DemoVueMethod,
+          remove=((demoVue:RuleVue,idx:Int)=>Vue.delete(demoVue.rules,idx)):js.ThisFunction1[RuleVue,Int,_],
+          flipAll=((demoVue:RuleVue)=>demoVue.rules.foreach(td=>td.active= !td.active)):DemoVueMethod
+        ),
+        computed=literal(todosComputed=(demoVue:RuleVue)=> demoVue.rules.map(_.content)),
+
         filters=literal(reverse=((value:js.Any)=>value.toString.reverse),
           wrap=(value:js.Any,begin:String, end:String)=>begin+value.toString+end,
           extract=(array:js.Array[js.Dynamic],field:String)=>
@@ -106,8 +106,9 @@ object Todo extends {
       )
     )
 
-   // demo.$watch("title",(newValue:String, oldValue:String) => println("changed "+newValue))
-    val demoVue=demo.asInstanceOf[DemoVue]
-    demoVue
+    //ruleComponent.$watch("select",(newValue:String, oldValue:String) => println("changed "+newValue))
+    val ruleVue=ruleComponent.asInstanceOf[RuleVue]
+    //$("select").change(() => {println("Selection changed!")})//selectionChanged})
+    ruleVue
   }
 }
