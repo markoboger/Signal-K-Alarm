@@ -10,8 +10,9 @@ jsDependencies += "org.webjars" % "jquery" % "2.2.1" / "jquery.js" minified "jqu
 libraryDependencies += "org.querki" %%% "jquery-facade" % "1.2"
 libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.7"
 //libraryDependencies += "com.typesafe.play" %% "twirl-api" %"1.5.0"
-libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
-libraryDependencies += "org.typelevel"  %% "squants"  % "1.6.0"
+libraryDependencies += "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.2"
+libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.0" % "test"
+libraryDependencies += "org.typelevel"  %%% "squants"  % "1.6.0"
 
 // This is an application with a main method
 scalaJSUseMainModuleInitializer := true

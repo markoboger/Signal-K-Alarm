@@ -4,3 +4,5 @@
 /target/
 /target/scala-2.12/classes/
 /.idea
+/node_modules
+package-lock.json
