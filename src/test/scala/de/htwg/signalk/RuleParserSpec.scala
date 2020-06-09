@@ -1,5 +1,6 @@
 package de.htwg.signalk
 
+import de.htwg.signalk.parser.RuleParser
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import squants.motion.{KilometersPerHour, Knots}

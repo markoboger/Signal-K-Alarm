@@ -1,5 +1,6 @@
 package de.htwg.signalk
 
+import de.htwg.signalk.parser.OrderOperator
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import squants.space.{Length, Meters}

@@ -33,35 +33,23 @@ object RuleEditor extends {
   @JSExport
   def main():RuleVue = {
 
-    val rules=js.Array("When timer is -0:05, sound Beep once, warn 'Start in 5 min'",
-    "When timer is -0:04, sound Beep twice, warn 'Start in 4 min'",
-    "When timer is -0:01, sound Beep three times, warn 'Start in 1 min'",
-    "When timer is  0:00, sound Gong once, warn 'Start now', reset Timer(-0:05), restart Timer",
-
-    "When value of Depth is below 10 m, sound Beep once, warn 'Entering shallow waters', deactivate",
-    "When value of Depth is below 2.50 m, sound	LongBeep twice, warn 'Shallow water', reacitvate",
-    "When value of Log is above 1000 nm, sound Beep three times, warn 'Check Oil', log",
-    "When value of Fuel is below 20%, warn 'Fuel is low', reactivate",
-    "When value of Fuel is below 10%, sound Beep once, warn 'Refuel'",
-    "When value of TWA is outside 150 and 210, sound	Alarm1	3 min,warn 'Wind direction has changed', reactivate",
-    "When distance to Marker17 is below	1 nm, sound  Beep once, warn 'Approaching Marker 17', deactivate",
-    "When distance to Anker is above 100 m, sound Alarm1	until checked, warn 'Anker drifting', reactivate",
-
-    "When timer is 0:20 sound Beep once, warn 'Time for Lookout' reset Timer, start Timer",
-      "When time is 0:00 reset Daylog",
-    "When value of Battery is below	20%, send 'Charge Battery' to me, reactivate after 1:00",
-    "When value of TWS is above 40kn, send 'Boat in Storm' to me, reactivate after 1:00)")
+    val rules=js.Array(
+      "When timer is -0:05, sound Beep once, warn 'Start in 5 min'",
+      "When timer is -0:04, sound Beep twice, warn 'Start in 4 min'",
+      "When timer is -0:01, sound Beep three times, warn 'Start in 1 min'",
+      "When timer is  0:00, sound Gong once, warn 'Start now', reset Timer(-0:05), restart Timer"
+    )
 
     def ts=new java.util.Date().toString
 
     Vue.component("my-component", literal(
       props=js.Array("myMsg"),
-      template="<p>A custom component with msg {{myMsg}} <slot>default content</slot></p>"))
+      template="<p>A custom component with msg {{myMsg}} <slot>default content</slot></p>")
+    )
 
     Vue.directive("mydirective", literal(
       update=(el:HTMLElement, directive:Directive)=>{el.innerHTML="This comes from my-directive with contents "+directive.value+" and expression "+directive.expression}
-    )
-    )
+    ))
 
     val ruleComponent = new Vue(
       literal(el="#AlarmRuleEditor",
@@ -179,8 +167,7 @@ object RuleEditor extends {
     $(dom.document).ready{ () => {
       selectionChanged
       $("select").change(() => {selectionChanged})
-    }
-    }
+    }}
     ruleVue
   }
 }

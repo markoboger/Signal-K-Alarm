@@ -1,4 +1,4 @@
-package de.htwg.signalk
+package de.htwg.signalk.parser
 
 import squants.space.Length
 
