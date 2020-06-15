@@ -1,12 +1,12 @@
-package de.htwg.signalk.html
+package de.htwg.signalk.html.action
 
 import scalatags.JsDom.all._
 
-object TimeExpression {
+object SoundExpression {
 
-  def buildTimeExpression() = {
+  def buildSoundExpression() = {
     span(
-      id:="expression",
+      id:="action-expression",
       span(
         select(
           option("sfsfe")
