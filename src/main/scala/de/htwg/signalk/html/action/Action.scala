@@ -2,35 +2,80 @@ package de.htwg.signalk.html.action
 
 import de.htwg.signalk.html.Util.buildSelector
 import de.htwg.signalk.html.action.SoundExpression.buildSoundExpression
-import de.htwg.signalk.html.rule.Rule.expressionSelector
 import org.scalajs.dom.{Event, document}
 import scalatags.JsDom.all._
+import org.scalajs.dom.html.Div
 
 object Action {
-  val actionSelector = buildSelector(List("sound", "warn", "log", "send", "activate", "deactivate", "reset", "restart"), "actionSelector")
+  def actionSelector = buildSelector(List("sound", "warn", "log", "send", "activate", "deactivate", "reset", "restart"), "actionSelector")
+  def soundExpression = buildSoundExpression()
 
-  val soundExpression = buildSoundExpression()
-
-  def buildAction(): Unit = {
+  def action = {
     val action = div(
-      id := "Rule",
+      id := "Action",
       span(
-        "When ",
+        ", then ",
         actionSelector
       ),
-      soundExpression
+      buildSoundExpression(),
+      addButton
     ).render
 
-    expressionSelector.addEventListener("change", { _: Event => {
+    actSelectionChange(action)
+    action
+  }
+
+  private def actSelectionChange(action: Div)= {
+    actionSelector.addEventListener("change", { _: Event => {
       val activeExpression = document.getElementById("action-expression")
 
-      expressionSelector.value match {
+      actionSelector.value match {
         case "sound" => action.replaceChild(soundExpression, activeExpression)
         case "" => action.removeChild(activeExpression)
         case _ => action.replaceChild(soundExpression, activeExpression)
       }
     }})
-
   }
 
+  private def addButton = {
+    val addButton = span(
+      button("+")
+    ).render
+
+    addButton.addEventListener("click", { _: Event => {
+      addAction()
+    }})
+
+    addButton
+  }
+
+  private def removeButton = {
+    span(button(
+      "-"
+    )).render
+  }
+
+  private def addAction(): Unit = {
+    val actionElement = document.getElementById("Action")
+    val removeButton = this.removeButton
+
+    val additionalAction = div(
+      span(
+        ", and ",
+        actionSelector
+      ),
+      soundExpression,
+      span(
+        removeButton
+      )
+    ).render
+
+    additionalAction.classList.add("additional-action")
+
+    actionElement.appendChild(additionalAction)
+
+    removeButton.addEventListener("click", { _: Event => {
+      actionElement.removeChild(additionalAction)
+    }})
+  }
 }

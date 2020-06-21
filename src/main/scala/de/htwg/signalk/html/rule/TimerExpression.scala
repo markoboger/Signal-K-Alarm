@@ -6,9 +6,7 @@ import org.scalajs.dom.document
 import org.scalajs.dom.raw.HTMLSelectElement
 
 object TimerExpression {
-  val timerArg = buildTimerArg()
-
-  def buildTimerExpression() = {
+  def timerExpression = {
     span(
       id:="rule-expression",
       span(
@@ -18,7 +16,7 @@ object TimerExpression {
     ).render
   }
 
-  private def buildTimerArg() = {
+  private def timerArg = {
     span(buildSelector(List("0:05", "-0:05"), "timerArg")).render
   }
 

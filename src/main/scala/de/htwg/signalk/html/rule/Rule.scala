@@ -1,21 +1,19 @@
 package de.htwg.signalk.html.rule
 
 import de.htwg.signalk.html.Util.{buildSelector, createOnChoiceSwitch}
-import de.htwg.signalk.html.rule.TimeExpression.buildTimeExpression
-import de.htwg.signalk.html.rule.TimerExpression.buildTimerExpression
-import de.htwg.signalk.html.rule.ValueExpression.buildValueExpression
-import de.htwg.signalk.html.rule.DistanceExpression.buildDistanceExpression
+import de.htwg.signalk.html.rule.TimeExpression.timeExpression
+import de.htwg.signalk.html.rule.TimerExpression.timerExpression
+import de.htwg.signalk.html.rule.ValueExpression.valueExpression
+import de.htwg.signalk.html.rule.DistanceExpression.distanceExpression
 import scalatags.JsDom.all._
 
 object Rule {
 
-  val expressionSelector = buildSelector(List("value of", "distance to", "time", "timer"), "expressionSelector")
-  val valueExpression = buildValueExpression()
-  val distanceExpression = buildDistanceExpression()
-  val timeExpression = buildTimeExpression()
-  val timerExpression = buildTimerExpression()
+  def expressionSelector = buildSelector(List("value of", "distance to", "time", "timer"), "expressionSelector")
 
-  def buildRule() = {
+  def rule = {
+    val expressionSelector = this.expressionSelector
+
     val rule = div(
       id := "Rule",
       span(

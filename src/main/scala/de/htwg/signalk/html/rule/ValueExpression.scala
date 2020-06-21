@@ -1,58 +1,96 @@
 package de.htwg.signalk.html.rule
 
 import de.htwg.signalk.html.Util.buildSelector
+import org.scalajs.dom.html.Span
 import org.scalajs.dom.raw.HTMLSelectElement
 import org.scalajs.dom.{Event, document}
 import scalatags.JsDom.all._
 
 object ValueExpression {
-  val valueSelector = buildSelector(List("Depth", "Battery", "Fuel", "Performance", "TWA", "TWD", "SOG", "STW", "AWS", "TWS", "VMG", "Air", "Water"), "valueSelector")
+  val possibleValues = List("Depth", "Battery", "Fuel", "Performance", "TWA", "TWD", "SOG", "STW", "AWS", "TWS", "VMG", "Air", "Water")
+  val possibleValueArgs: List[List[String]] = List(
+    List("2 m", "5 m", "10 m", "25 m", "50 m", "100 m"), // Depth
+    List("0 %", "10 %", "20 %", "50 %", "80 %", "100 %"), // Battery
+    List("0 %", "10 %", "20 %", "50 %", "80 %", "100 %"), // Fuel
+    List("0 %", "10 %", "20 %", "50 %", "80 %", "100 %"), // Performance
+    List("0 °", "30 °", "60 °", "90 °", "120 °", "150 °", "180 °", "210 °", "240 °", "270 °", "300 °", "330 °"), // TWA
+    List("0 °", "30 °", "60 °", "90 °", "120 °", "150 °", "180 °", "210 °", "240 °", "270 °", "300 °", "330 °"), // TWD
+    List("0 kn", "1 kn", "2 kn", "5 kn", "10 kn", "20 kn", "40 kn", "60 kn"), // SOG
+    List("0 kn", "1 kn", "2 kn", "5 kn", "10 kn", "20 kn", "40 kn", "60 kn"), // STW
+    List("0 kn", "1 kn", "2 kn", "5 kn", "10 kn", "20 kn", "40 kn", "60 kn"), // AWS
+    List("0 kn", "1 kn", "2 kn", "5 kn", "10 kn", "20 kn", "40 kn", "60 kn"), // TWS
+    List("0 kn", "1 kn", "2 kn", "5 kn", "10 kn", "20 kn", "40 kn", "60 kn"), // VMG
+    List("-10 °C", "0 °C", "10 °C", "20 °C", "30 °C", "40 °C", "50 °C", "80 °C", "100 °C"), // Air
+    List("-10 °C", "0 °C", "10 °C", "20 °C", "30 °C", "40 °C", "50 °C", "80 °C", "100 °C") // Water
+  )
 
   val singleArgOperatorOptions = List("above", "below")
   val twoArgOperatorOptions = List("between", "outside")
 
-  val valueArgSelector = buildValueArgSelector()
+  def valueExpression = {
+    val valueSelectors = span(
+      " is ",
+      span(
+        valueArgSelector
+      ),
+      valueArgOne(possibleValueArgs.head),
+      valueArgTwo(possibleValueArgs.head)
+    ).render
 
-  val valueArgOne = buildValueArgOne()
-  val valueArgTwo = buildValueArgTwo()
+    val valueSelector = this.valueSelector(valueSelectors)
 
-  def buildValueExpression() = {
     span(
       id:="rule-expression",
       span(
         valueSelector
       ),
-      span(
-        " is ",
-        span(valueArgSelector),
-        valueArgOne,
-        valueArgTwo
-      )
+      valueSelectors
     ).render
   }
 
-  private def buildValueArgSelector() = {
+  private def valueSelector(valueSelectors: Span) = {
+    val valueSelector = buildSelector(possibleValues, "valueSelector")
+
+    valueSelector.addEventListener("change", { _: Event => {
+      val selectedValue = valueSelector.value
+
+      for (i <- possibleValues.indices) {
+        if(possibleValues(i) == selectedValue) {
+          val currentValueArgOne = document.getElementById("valueArgOne").parentNode
+          val currentValueArgTwo = document.getElementById("valueArgTwo").parentNode
+          valueSelectors.replaceChild(valueArgOne(possibleValueArgs(i)), currentValueArgOne)
+          valueSelectors.replaceChild(valueArgTwo(possibleValueArgs(i)), currentValueArgTwo)
+        }
+      }
+    }})
+
+    valueSelector
+  }
+
+  private def valueArgSelector = {
     val valueArgSelector = buildSelector(twoArgOperatorOptions:::singleArgOperatorOptions, "valueArgSelector")
 
     valueArgSelector.addEventListener("change", { _: Event => {
       if (twoArgOperatorOptions.contains(valueArgSelector.value)) {
-        valueArgTwo.removeAttribute("hidden")
+        document.getElementById("valueArgTwo").asInstanceOf[HTMLSelectElement].parentElement.removeAttribute("hidden")
       } else {
-        valueArgTwo.setAttribute("hidden", "")
+        document.getElementById("valueArgTwo").asInstanceOf[HTMLSelectElement].parentElement.setAttribute("hidden", "")
       }
     }})
 
     valueArgSelector
   }
 
-  private def buildValueArgOne() = {
-    span(buildSelector(List("2 m", "5 m", "10 m", "25 m", "50 m", "100 m"), "valueArgOne")).render
+  private def valueArgOne(values: List[String]) = {
+    span(
+      buildSelector(values, "valueArgOne")
+    ).render
   }
 
-  private def buildValueArgTwo() = {
+  private def valueArgTwo(values: List[String]) = {
     span(
       " and ",
-      buildSelector(List("2 m", "5 m", "10 m", "25 m", "50 m", "100 m"), "valueArgTwo")
+      buildSelector(values, "valueArgTwo")
     ).render
   }
 
@@ -60,12 +98,12 @@ object ValueExpression {
     val valueSelector = document.getElementById("valueSelector").asInstanceOf[HTMLSelectElement].value
     val valueArgSelector = document.getElementById("valueArgSelector").asInstanceOf[HTMLSelectElement].value
     val valueArgOne = document.getElementById("valueArgOne").asInstanceOf[HTMLSelectElement].value
-    val valueArgTwo = document.getElementById("valueArgTwo").asInstanceOf[HTMLSelectElement].value
+    val valueArgTwo = document.getElementById("valueArgTwo").asInstanceOf[HTMLSelectElement]
 
-    if (this.valueArgTwo.hasAttribute("hidden")) {
+    if (valueArgTwo.parentElement.hasAttribute("hidden")) {
       "When value of " + valueSelector + " is " + valueArgSelector + " " + valueArgOne
     } else {
-      "When value of " + valueSelector + " is " + valueArgSelector + " " + valueArgOne + " and " + valueArgTwo
+      "When value of " + valueSelector + " is " + valueArgSelector + " " + valueArgOne + " and " + valueArgTwo.value
     }
   }
 }

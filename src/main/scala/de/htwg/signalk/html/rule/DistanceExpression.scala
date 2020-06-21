@@ -6,17 +6,12 @@ import org.scalajs.dom.{Event, document}
 import scalatags.JsDom.all._
 
 object DistanceExpression {
-  val distanceSelector = buildSelector(List("Waypoint", "Photo", "Logbook Entry", "Mark"), "distanceSelector")
+  def distanceSelector = buildSelector(List("Waypoint", "Photo", "Logbook Entry", "Mark"), "distanceSelector")
 
   val singleArgOperatorOptions = List("above", "below")
   val twoArgOperatorOptions = List("between", "outside")
 
-  val distanceArgSelector = buildValueArgSelector()
-
-  val distanceArgOne = buildDistanceArgOne()
-  val distanceArgTwo = buildDistanceArgTwo()
-
-  def buildDistanceExpression() = {
+  def distanceExpression = {
     span(
       id:="rule-expression",
       span(
@@ -31,32 +26,34 @@ object DistanceExpression {
     ).render
   }
 
-  private def buildValueArgSelector() = {
-    val valueArgSelector = buildSelector(twoArgOperatorOptions:::singleArgOperatorOptions, "distanceArgSelector")
+  private def distanceArgSelector = {
+    val distanceArgSelector = buildSelector(twoArgOperatorOptions:::singleArgOperatorOptions, "distanceArgSelector")
 
-    valueArgSelector.addEventListener("change", { _: Event => {
-      if (twoArgOperatorOptions.contains(valueArgSelector.value)) {
-        distanceArgOne.removeAttribute("hidden")
+    distanceArgSelector.addEventListener("change", { _: Event => {
+      if (twoArgOperatorOptions.contains(distanceArgSelector.value)) {
+        document.getElementById("distanceArgTwo").asInstanceOf[HTMLSelectElement].parentElement.removeAttribute("hidden")
       } else {
-        distanceArgTwo.setAttribute("hidden", "")
+        document.getElementById("distanceArgTwo").asInstanceOf[HTMLSelectElement].parentElement.setAttribute("hidden", "")
       }
     }})
 
-    valueArgSelector
+    distanceArgSelector
   }
 
-  private def buildDistanceArgOne() = {
-    span(buildSelector(List("2 m", "5 m", "10 m", "25 m", "50 m", "100 m"), "distanceArgOne")).render
-  }
-
-  private def buildDistanceArgTwo() = {
+  private def distanceArgOne = {
     span(
-      " and ",
-      buildSelector(List("2 m", "5 m", "10 m", "25 m", "50 m", "100 m"), "distanceArgTwo")
+      buildSelector(List("100 m", "200 m", "500 m", "1 nm", "2 nm", "5 nm"), "distanceArgOne")
     ).render
   }
 
-  def retrieveValueExpression(): String = {
+  private def distanceArgTwo = {
+    span(
+      " and ",
+      buildSelector(List("100 m", "200 m", "500 m", "1 nm", "2 nm", "5 nm"), "distanceArgTwo")
+    ).render
+  }
+
+  def retrieveDistanceExpression(): String = {
     val distanceSelector = document.getElementById("distanceSelector").asInstanceOf[HTMLSelectElement].value
     val distanceArgSelector = document.getElementById("distanceArgSelector").asInstanceOf[HTMLSelectElement].value
     val distanceArgOne = document.getElementById("distanceArgOne").asInstanceOf[HTMLSelectElement].value
