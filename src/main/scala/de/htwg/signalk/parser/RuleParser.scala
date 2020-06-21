@@ -20,15 +20,15 @@ class RuleParser extends RegexParsers {
   def timerClause = "timer" ~ "is" ~ opt(sign) ~ timeExp ^^ { case t ~ _ ~ sign ~ time => new Trigger[Time](t, TimeOperator[Time].is(sign.getOrElse(1) * time)(_)) }
 
   def depthExp = DepthParser().argExp.asInstanceOf[Parser[Length => Boolean]]
-  def depthClause = "value" ~ "of" ~ "Depth" ~ "is" ~ depthExp ^^ { case _ ~ _ ~ depth ~ _ ~ depthExp => new DepthTrigger(depth, depthExp) }
-
-  def speedExp = SpeedParser().argExp.asInstanceOf[Parser[Velocity => Boolean]]
-  def speedType = "SOG" | "STW" | "AWS" | "TWS" | "VMG"
-  def speedClause = "value" ~ "of" ~ speedType ~ "is" ~ speedExp ^^ { case _ ~ _ ~ speedType ~ _ ~ speedExp => new Trigger[Velocity](speedType, speedExp) }
+  def depthClause = "value" ~ "of" ~ "Depth" ~ "is" ~ depthExp ^^ { case _ ~ _ ~ depth ~ _ ~ depthExp => new Trigger[Length](depth, depthExp) }
 
   def distanceExp = DistanceParser().argExp.asInstanceOf[Parser[Length => Boolean]]
   def distanceType = "Marker" | "LogEntry" | "Photo" | "Waypoint"
   def distanceClause = "distance" ~ "to" ~ distanceType ~ "is " ~ distanceExp ^^ { case _ ~ _ ~ distanceType ~ _ ~ distance => new Trigger[Length](distanceType, distance) }
+
+  def speedExp = SpeedParser().argExp.asInstanceOf[Parser[Velocity => Boolean]]
+  def speedType = "SOG" | "STW" | "AWS" | "TWS" | "VMG"
+  def speedClause = "value" ~ "of" ~ speedType ~ "is" ~ speedExp ^^ { case _ ~ _ ~ speedType ~ _ ~ speedExp => new Trigger[Velocity](speedType, speedExp) }
 
   def angleExp = AngleParser().argExp.asInstanceOf[Parser[Angle=>Boolean]]
   def angleType = "TWA" | "TWD" | "AWA" | "AWD" | "HDG" | "COG" | "CTW"
@@ -42,10 +42,13 @@ class RuleParser extends RegexParsers {
   def tempType = "Air" | "Water" | "Engine"
   def tempClause = "value" ~ "of" ~ tempType ~ "is" ~ tempExp ^^ { case _ ~ _ ~ tempType ~ _ ~ tempExp => new Trigger[Temperature](tempType, tempExp) }
 
-  def lengthTrigger = "When" ~ (distanceClause | depthClause) ^^ { case _ ~ trigger => Rule(trigger, new Action) }
   def timeTrigger = "When" ~ (timeClause | timerClause) ^^ { case _ ~ trigger => Rule(trigger, new Action) }
+  def lengthTrigger = "When" ~ (depthClause | distanceClause) ^^ { case _ ~ trigger => Rule(trigger, new Action) }
+  def speedTrigger = "When" ~ speedClause ^^ { case _ ~ trigger => Rule(trigger, new Action) }
   def angleTrigger = "When" ~ angleClause ^^ { case _ ~ trigger => Rule(trigger, new Action) }
-  def trigger = lengthTrigger | timeTrigger | angleTrigger
+  def percentTrigger = "When" ~ percentClause ^^ { case _ ~ trigger => Rule(trigger, new Action) }
+  def tempTrigger = "When" ~ tempClause ^^ { case _ ~ trigger => Rule(trigger, new Action) }
+  def trigger = timeTrigger | lengthTrigger | speedTrigger | angleTrigger | percentTrigger | tempTrigger
 
   abstract class OperatorParser[A<:Ordered[A]] extends RegexParsers {
     def valueHole = "[0-9]{1,5}".r ^^ { case numString => numString.toInt }

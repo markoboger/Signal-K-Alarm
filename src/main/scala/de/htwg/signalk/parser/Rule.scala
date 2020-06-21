@@ -1,7 +1,5 @@
 package de.htwg.signalk.parser
 
-import squants.space.Length
-
 case class OrderOperator[A<:Ordered[A]](){
   def above(static:A)(current:A):Boolean = { static<current}
   def below(static:A)(current:A):Boolean = { static>current }
@@ -16,11 +14,6 @@ case class TimeOperator[Time]() {
 class Trigger[A](cause:String, f:A => Boolean) {
   def trigger(static:A) = f(static)
   def check(current:A)  = trigger(current)
-}
-
-class DepthTrigger(cause:String, f:(Length) => Boolean) extends Trigger[Length](cause, f){
-  override def trigger(static:Length) = f(-1*static)
-  override def check(current:Length)  = trigger(-1*current)
 }
 
 case class Action() {

@@ -24,7 +24,6 @@ object Index {
         case "timer" => println(TimerExpression.retrieveTimerExpression())
       }
     }})
-    
     document.body.appendChild(rule)
     document.body.appendChild(submitButton)
   }

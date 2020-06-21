@@ -1,13 +1,13 @@
 package de.htwg.signalk
 
 import de.htwg.signalk.parser.RuleParser
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import squants.motion.{KilometersPerHour, Knots}
+import squants.space.{Degrees, Feet}
+import squants.thermal.Celsius
 import squants.time.{Hours, Minutes}
 import squants.{Meters, Percent}
-import squants.space.{Degrees, Feet, Kilometers, NauticalMiles}
-import squants.thermal.Celsius
 
 
 class RuleParserSpec extends AnyWordSpec with Matchers{
@@ -123,6 +123,7 @@ class RuleParserSpec extends AnyWordSpec with Matchers{
     }
     "accept Depth clauses" in {
       parser.parse(parser.trigger, "When value of Depth is below 10m").successful should be(true)
+      parser.parse(parser.trigger, "When value of Depth is between 10m and 20m").successful should be(true)
     }
     "accept Angle clauses" in {
       parser.parse(parser.trigger, "When value of TWA is below 270°").successful should be(true)
@@ -131,6 +132,10 @@ class RuleParserSpec extends AnyWordSpec with Matchers{
     "accept Distance clauses" in {
       parser.parse(parser.trigger, "When distance to Marker is above 500 m").successful should be(true)
       parser.parse(parser.trigger, "When distance to Waypoint is below 120 m").successful should be(true)
+    }
+    "accept Speed clauses" in {
+      parser.parse(parser.trigger, "When value of STW is above 500kn").successful should be(true)
+      parser.parse(parser.trigger, "When value of VMG is outside 20m/s and 40m/s").successful should be(true)
     }
   }
 }
