@@ -1,6 +1,6 @@
 package de.htwg.signalk
 
-import de.htwg.signalk.parser.RuleParser
+import de.htwg.signalk.parser.TriggerParser
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import squants.motion.{KilometersPerHour, Knots}
@@ -10,9 +10,9 @@ import squants.time.{Hours, Minutes}
 import squants.{Meters, Percent}
 
 
-class RuleParserSpec extends AnyWordSpec with Matchers{
+class TriggerParserSpec extends AnyWordSpec with Matchers{
 
-  val parser = new RuleParser
+  val parser = new TriggerParser
 
   "A Time Expression 'timeExp' " should {
     "accept expressions of the form '19:59'" in {

@@ -1,4 +1,4 @@
-package de.htwg.signalk.html.rule
+package de.htwg.signalk.html.trigger
 
 import de.htwg.signalk.html.Util.buildSelector
 import org.scalajs.dom.raw.HTMLSelectElement
@@ -13,7 +13,7 @@ object DistanceExpression {
 
   def distanceExpression = {
     span(
-      id:="rule-expression",
+      id:="trigger-expression",
       span(
         distanceSelector
       ),

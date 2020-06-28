@@ -1,4 +1,4 @@
-package de.htwg.signalk.html.rule
+package de.htwg.signalk.html.trigger
 
 import de.htwg.signalk.html.Util.buildSelector
 import org.scalajs.dom.document
@@ -8,7 +8,7 @@ import scalatags.JsDom.all._
 object TimeExpression {
   def timeExpression = {
     span(
-      id:="rule-expression",
+      id:="trigger-expression",
       span(
         " is ",
         timeArgHours,

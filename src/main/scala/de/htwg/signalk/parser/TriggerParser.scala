@@ -8,7 +8,7 @@ import squants.{Angle, Dimensionless, Meters, Percent}
 
 import scala.util.parsing.combinator.RegexParsers
 
-class RuleParser extends RegexParsers {
+class TriggerParser extends RegexParsers {
 
   def sign = "[-]".r ^^ { _ => -1 }
   def hour01 = ("([0-1])?[0-9]".r ~ ":") ^^ { case string ~ _ => Hours(string.toInt) }
@@ -42,13 +42,15 @@ class RuleParser extends RegexParsers {
   def tempType = "Air" | "Water" | "Engine"
   def tempClause = "value" ~ "of" ~ tempType ~ "is" ~ tempExp ^^ { case _ ~ _ ~ tempType ~ _ ~ tempExp => new Trigger[Temperature](tempType, tempExp) }
 
-  def timeTrigger = "When" ~ (timeClause | timerClause) ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
-  def lengthTrigger = "When" ~ (depthClause | distanceClause) ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
-  def speedTrigger = "When" ~ speedClause ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
-  def angleTrigger = "When" ~ angleClause ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
-  def percentTrigger = "When" ~ percentClause ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
-  def tempTrigger = "When" ~ tempClause ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
-  def trigger = timeTrigger | lengthTrigger | speedTrigger | angleTrigger | percentTrigger | tempTrigger
+
+  def trigger = "When" ~ (timeClause | timerClause | depthClause | distanceClause | speedClause | angleClause | percentClause | tempClause) ^^ { case _ ~ trigger => trigger }
+//  def timeTrigger = "When" ~ (timeClause | timerClause) ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
+//  def lengthTrigger = "When" ~ (depthClause | distanceClause) ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
+//  def speedTrigger = "When" ~ speedClause ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
+//  def angleTrigger = "When" ~ angleClause ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
+//  def percentTrigger = "When" ~ percentClause ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
+//  def tempTrigger = "When" ~ tempClause ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
+//  def trigger = timeTrigger | lengthTrigger | speedTrigger | angleTrigger | percentTrigger | tempTrigger
 
   abstract class OperatorParser[A<:Ordered[A]] extends RegexParsers {
     def valueHole = "[0-9]{1,5}".r ^^ { case numString => numString.toInt }
