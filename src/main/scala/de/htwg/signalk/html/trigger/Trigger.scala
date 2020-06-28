@@ -1,6 +1,6 @@
 package de.htwg.signalk.html.trigger
 
-import de.htwg.signalk.html.Util.{buildSelector, createOnChoiceSwitch}
+import de.htwg.signalk.html.Util.{buildSelectorWithID, createOnChoiceSwitch}
 import de.htwg.signalk.html.trigger.TimeExpression.timeExpression
 import de.htwg.signalk.html.trigger.TimerExpression.timerExpression
 import de.htwg.signalk.html.trigger.ValueExpression.valueExpression
@@ -9,7 +9,7 @@ import scalatags.JsDom.all._
 
 object Trigger {
 
-  def expressionSelector = buildSelector(List("value of", "distance to", "time", "timer"), "expressionSelector")
+  def expressionSelector = buildSelectorWithID(List("value of", "distance to", "time", "timer"), "expressionSelector")
 
   def trigger = {
     val expressionSelector = this.expressionSelector

@@ -1,6 +1,6 @@
 package de.htwg.signalk.html.trigger
 
-import de.htwg.signalk.html.Util.buildSelector
+import de.htwg.signalk.html.Util.buildSelectorWithID
 import scalatags.JsDom.all._
 import org.scalajs.dom.document
 import org.scalajs.dom.raw.HTMLSelectElement
@@ -17,7 +17,7 @@ object TimerExpression {
   }
 
   private def timerArg = {
-    span(buildSelector(List("0:05", "-0:05"), "timerArg")).render
+    span(buildSelectorWithID(List("0:05", "-0:05"), "timerArg")).render
   }
 
   def retrieveTimerExpression(): String = {

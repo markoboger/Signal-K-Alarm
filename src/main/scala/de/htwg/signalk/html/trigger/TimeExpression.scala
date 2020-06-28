@@ -1,6 +1,6 @@
 package de.htwg.signalk.html.trigger
 
-import de.htwg.signalk.html.Util.buildSelector
+import de.htwg.signalk.html.Util.buildSelectorWithID
 import org.scalajs.dom.document
 import org.scalajs.dom.raw.HTMLSelectElement
 import scalatags.JsDom.all._
@@ -20,14 +20,14 @@ object TimeExpression {
 
   private def timeArgHours = {
     span(
-      buildSelector(List("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
+      buildSelectorWithID(List("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
         "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"), "timerArgHours")
     ).render
   }
 
   private def timeArgMinutes = {
     span(
-      buildSelector(List("00", "10", "15", "20", "30", "40", "45", "50"), "timerArgMinutes")
+      buildSelectorWithID(List("00", "10", "15", "20", "30", "40", "45", "50"), "timerArgMinutes")
     ).render
   }
 

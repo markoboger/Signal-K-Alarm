@@ -1,6 +1,6 @@
 package de.htwg.signalk.html.trigger
 
-import de.htwg.signalk.html.Util.buildSelector
+import de.htwg.signalk.html.Util.buildSelectorWithID
 import org.scalajs.dom.html.Span
 import org.scalajs.dom.raw.HTMLSelectElement
 import org.scalajs.dom.{Event, document}
@@ -49,7 +49,7 @@ object ValueExpression {
   }
 
   private def valueSelector(valueSelectors: Span) = {
-    val valueSelector = buildSelector(possibleValues, "valueSelector")
+    val valueSelector = buildSelectorWithID(possibleValues, "valueSelector")
 
     valueSelector.addEventListener("change", { _: Event => {
       val selectedValue = valueSelector.value
@@ -68,7 +68,7 @@ object ValueExpression {
   }
 
   private def valueArgSelector = {
-    val valueArgSelector = buildSelector(twoArgOperatorOptions:::singleArgOperatorOptions, "valueArgSelector")
+    val valueArgSelector = buildSelectorWithID(twoArgOperatorOptions:::singleArgOperatorOptions, "valueArgSelector")
 
     valueArgSelector.addEventListener("change", { _: Event => {
       if (twoArgOperatorOptions.contains(valueArgSelector.value)) {
@@ -83,14 +83,14 @@ object ValueExpression {
 
   private def valueArgOne(values: List[String]) = {
     span(
-      buildSelector(values, "valueArgOne")
+      buildSelectorWithID(values, "valueArgOne")
     ).render
   }
 
   private def valueArgTwo(values: List[String]) = {
     span(
       " and ",
-      buildSelector(values, "valueArgTwo")
+      buildSelectorWithID(values, "valueArgTwo")
     ).render
   }
 

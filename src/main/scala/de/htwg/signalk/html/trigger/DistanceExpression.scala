@@ -1,12 +1,12 @@
 package de.htwg.signalk.html.trigger
 
-import de.htwg.signalk.html.Util.buildSelector
+import de.htwg.signalk.html.Util.buildSelectorWithID
 import org.scalajs.dom.raw.HTMLSelectElement
 import org.scalajs.dom.{Event, document}
 import scalatags.JsDom.all._
 
 object DistanceExpression {
-  def distanceSelector = buildSelector(List("Waypoint", "Photo", "Logbook Entry", "Mark"), "distanceSelector")
+  def distanceSelector = buildSelectorWithID(List("Waypoint", "Photo", "Logbook Entry", "Mark"), "distanceSelector")
 
   val singleArgOperatorOptions = List("above", "below")
   val twoArgOperatorOptions = List("between", "outside")
@@ -27,7 +27,7 @@ object DistanceExpression {
   }
 
   private def distanceArgSelector = {
-    val distanceArgSelector = buildSelector(twoArgOperatorOptions:::singleArgOperatorOptions, "distanceArgSelector")
+    val distanceArgSelector = buildSelectorWithID(twoArgOperatorOptions:::singleArgOperatorOptions, "distanceArgSelector")
 
     distanceArgSelector.addEventListener("change", { _: Event => {
       if (twoArgOperatorOptions.contains(distanceArgSelector.value)) {
@@ -42,14 +42,14 @@ object DistanceExpression {
 
   private def distanceArgOne = {
     span(
-      buildSelector(List("100 m", "200 m", "500 m", "1 nm", "2 nm", "5 nm"), "distanceArgOne")
+      buildSelectorWithID(List("100 m", "200 m", "500 m", "1 nm", "2 nm", "5 nm"), "distanceArgOne")
     ).render
   }
 
   private def distanceArgTwo = {
     span(
       " and ",
-      buildSelector(List("100 m", "200 m", "500 m", "1 nm", "2 nm", "5 nm"), "distanceArgTwo")
+      buildSelectorWithID(List("100 m", "200 m", "500 m", "1 nm", "2 nm", "5 nm"), "distanceArgTwo")
     ).render
   }
 

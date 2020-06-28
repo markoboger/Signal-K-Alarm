@@ -1,10 +1,12 @@
 package de.htwg.signalk.html.action
 
-import de.htwg.signalk.html.Util.buildSelector
+import de.htwg.signalk.html.Util.buildSelectorWithID
+import org.scalajs.dom.document
+import org.scalajs.dom.raw.HTMLSelectElement
 import scalatags.JsDom.all._
 
 object SoundExpression {
-  def soundAction = buildSelector(List("once", "twice", "three times", "max 20 sec", "max 1 min", "until checked"), "distanceSelector")
+  def soundAction = buildSelectorWithID(List("once", "twice", "three times", "max 20 sec", "max 1 min", "until checked"), "soundSelector")
 
   def buildSoundExpression() = {
     span(
@@ -13,5 +15,9 @@ object SoundExpression {
         soundAction
       )
     ).render
+  }
+
+  def retrieveSoundExpression(): String = {
+    ", then sound " + document.getElementById("soundSelector").asInstanceOf[HTMLSelectElement].value
   }
 }

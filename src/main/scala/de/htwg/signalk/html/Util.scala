@@ -5,12 +5,17 @@ import org.scalajs.dom.html.{Element, Select}
 import scalatags.JsDom.all._
 
 object Util {
-  def buildSelector(options: List[String], selectorId: String) = {
+  def buildSelectorWithID(options: List[String], selectorId: String) = {
     select(
       id := selectorId,
-      for(opt <- options) yield
-        option(opt)
+      for(opt <- options) yield option(opt)
     ).render
+  }
+
+  def buildSelectorWithTag(options: List[String], selectorTag: String) = {
+    val selector = select(for(opt <- options) yield option(opt)).render
+    selector.classList.add(selectorTag)
+    selector
   }
 
   def createOnChoiceSwitch(selector: Select, replaceElementId: String, replaceTargetElement: Element, selectValues: List[String], replaceElements: List[Element]): Unit = {

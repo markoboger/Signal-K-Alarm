@@ -1,13 +1,13 @@
 package de.htwg.signalk.html.action
 
-import de.htwg.signalk.html.Util.buildSelector
+import de.htwg.signalk.html.Util.buildSelectorWithID
 import de.htwg.signalk.html.action.SoundExpression.buildSoundExpression
 import org.scalajs.dom.{Event, document}
 import scalatags.JsDom.all._
 import org.scalajs.dom.html.Div
 
 object Action {
-  def actionSelector = buildSelector(List("sound", "warn", "log", "send", "activate", "deactivate", "reset", "restart"), "actionSelector")
+  def actionSelector = buildSelectorWithID(List("sound", "warn", "log", "send", "activate", "deactivate", "reset", "restart"), "actionSelector")
   def soundExpression = buildSoundExpression()
 
   def action = {
