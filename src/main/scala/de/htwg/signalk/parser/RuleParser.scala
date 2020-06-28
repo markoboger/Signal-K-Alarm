@@ -42,12 +42,12 @@ class RuleParser extends RegexParsers {
   def tempType = "Air" | "Water" | "Engine"
   def tempClause = "value" ~ "of" ~ tempType ~ "is" ~ tempExp ^^ { case _ ~ _ ~ tempType ~ _ ~ tempExp => new Trigger[Temperature](tempType, tempExp) }
 
-  def timeTrigger = "When" ~ (timeClause | timerClause) ^^ { case _ ~ trigger => Rule(trigger, new Action) }
-  def lengthTrigger = "When" ~ (depthClause | distanceClause) ^^ { case _ ~ trigger => Rule(trigger, new Action) }
-  def speedTrigger = "When" ~ speedClause ^^ { case _ ~ trigger => Rule(trigger, new Action) }
-  def angleTrigger = "When" ~ angleClause ^^ { case _ ~ trigger => Rule(trigger, new Action) }
-  def percentTrigger = "When" ~ percentClause ^^ { case _ ~ trigger => Rule(trigger, new Action) }
-  def tempTrigger = "When" ~ tempClause ^^ { case _ ~ trigger => Rule(trigger, new Action) }
+  def timeTrigger = "When" ~ (timeClause | timerClause) ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
+  def lengthTrigger = "When" ~ (depthClause | distanceClause) ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
+  def speedTrigger = "When" ~ speedClause ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
+  def angleTrigger = "When" ~ angleClause ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
+  def percentTrigger = "When" ~ percentClause ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
+  def tempTrigger = "When" ~ tempClause ^^ { case _ ~ trigger => Rule(trigger, DummyAction()) }
   def trigger = timeTrigger | lengthTrigger | speedTrigger | angleTrigger | percentTrigger | tempTrigger
 
   abstract class OperatorParser[A<:Ordered[A]] extends RegexParsers {

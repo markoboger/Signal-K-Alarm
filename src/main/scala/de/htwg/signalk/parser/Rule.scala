@@ -16,10 +16,6 @@ class Trigger[A](cause:String, f:A => Boolean) {
   def check(current:A)  = trigger(current)
 }
 
-case class Action() {
-  def activate():Unit = println("action")
-}
-
 case class Rule[A<:AnyRef](t:Trigger[A],action:Action) {
   def execute( current:A ) = if (t.check(current)) action.activate()
 }
