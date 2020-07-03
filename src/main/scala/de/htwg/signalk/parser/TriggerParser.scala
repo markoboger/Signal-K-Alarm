@@ -8,7 +8,7 @@ import squants.{Angle, Dimensionless, Meters, Percent}
 
 import scala.util.parsing.combinator.RegexParsers
 
-class TriggerParser extends RegexParsers {
+trait TriggerParser extends RegexParsers {
 
   def sign = "[-]".r ^^ { _ => -1 }
   def hour01 = ("([0-1])?[0-9]".r ~ ":") ^^ { case string ~ _ => Hours(string.toInt) }

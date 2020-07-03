@@ -4,7 +4,7 @@ import squants.time.{Minutes, Seconds}
 
 import scala.util.parsing.combinator.RegexParsers
 
-class ActionParser extends RegexParsers {
+trait ActionParser extends RegexParsers {
   def sentenceStart = (", " ~ "then") | "and"
 
   val numberConversion = Map("one" -> 1, "two" -> 2, "three" -> 3, "four" -> 4,"five" -> 5,"six" -> 6,"seven" -> 7,"eight" -> 8,"nine" -> 9, "ten" -> 10)
@@ -35,8 +35,8 @@ class ActionParser extends RegexParsers {
 
   def minutes = ("[0-5]?[0-9]".r ~ ":") ^^ { case string ~ _ => Minutes(string.toInt) }
   def seconds = "[0-5][0-9]".r ^^ { string => Seconds(string.toInt) }
-  def timeExp = minutes ~ seconds ^^ { case minutes ~ seconds => minutes + seconds }
-  def reactivateExp = "after" ~ (timeExp | minutesMin | secondsSec) ^^ { case _ ~ time => time }
+  def actionTimeExp = minutes ~ seconds ^^ { case minutes ~ seconds => minutes + seconds }
+  def reactivateExp = "after" ~ (actionTimeExp | minutesMin | secondsSec) ^^ { case _ ~ time => time }
   def reactivateClause = "reactivate" ~ opt(reactivateExp) ^^ { case _ ~ reactivateDelay => ReactivateAction(reactivateDelay) }
 
   def deactivateClause = "deactivate" ^^ { _ => DeactivateAction() }

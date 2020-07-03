@@ -1,13 +1,13 @@
 package de.htwg.signalk
 
-import de.htwg.signalk.parser.{ActionParser, LogAction, ReactivateAction, SendAction, SoundAction, SoundMax, SoundRepeat, SoundUntilChecked, WarnAction}
+import de.htwg.signalk.parser._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import squants.time.{Minutes, Seconds}
 
 class ActionParserSpec extends AnyWordSpec with Matchers{
 
-  val parser = new ActionParser
+  val parser = new RuleParser
 
   "A Sound Expression 'soundExp' " should {
     "accept expressions of the form 'once'" in {
