@@ -5,6 +5,8 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import squants.time.{Minutes, Seconds}
 
+import scala.util.Try
+
 class ActionParserSpec extends AnyWordSpec with Matchers{
 
   val parser = new RuleParser
@@ -32,7 +34,7 @@ class ActionParserSpec extends AnyWordSpec with Matchers{
   }
 
   "A Sound Clause 'soundClause' " should {
-    "accept expressions of the form 'sound Alarm once" in {
+    "accept expressions of the form 'sound Alarm once'" in {
       parser.parse(parser.soundClause, "sound Alarm once").get should be(SoundAction("Alarm", SoundRepeat(1)))
       parser.parse(parser.soundClause, "sound Horn eight times").get should be(SoundAction("Horn", SoundRepeat(8)))
       parser.parse(parser.soundClause, "sound Beep 71 times").get should be(SoundAction("Beep", SoundRepeat(71)))
@@ -40,6 +42,13 @@ class ActionParserSpec extends AnyWordSpec with Matchers{
       parser.parse(parser.soundClause, "sound Bell until checked").get should be(SoundAction("Bell", SoundUntilChecked()))
     }
   }
+
+  "A Sound Clause 'soundClause' " should {
+    "return the correct failure message with wrong sound type" in {
+      Try(parser.parse(parser.soundClause, "sound Ala once").get).failed.get.getMessage should be("Not a valid sound type! Try \"Alarm\", \"Beep\", \"Bell\", \"Horn\" or \"Whistle\"!")
+    }
+  }
+
 
   "A Warn Clause 'warnClause' " should {
     "accept expressions of the form 'warn this is a warn message" in {

@@ -9,6 +9,8 @@ import squants.thermal.Celsius
 import squants.time.{Hours, Minutes}
 import squants.{Meters, Percent}
 
+import scala.util.Try
+
 
 class TriggerParserSpec extends AnyWordSpec with Matchers{
 
@@ -29,15 +31,15 @@ class TriggerParserSpec extends AnyWordSpec with Matchers{
     }
 
     "not accept expressions of different forms like ' 0.00' or '25:61'" in {
-      parser.parse(parser.timeExp, "0.00").successful should be(false)
-      parser.parse(parser.timeExp, "00 00").successful should be(false)
-      parser.parse(parser.timeExp, "59").successful should be(false)
-      parser.parse(parser.timeExp, "000:00").successful should be(false)
-      parser.parse(parser.timeExp, "12:1").successful should be(false)
-      parser.parse(parser.timeExp, "19:61").successful should be(false)
-      parser.parse(parser.timeExp, "25:00").successful should be(false)
-      parser.parse(parser.timeExp, "35:00").successful should be(false)
-      parser.parse(parser.timeExp, "23:61").successful should be(false)
+      Try(parser.parse(parser.timeExp, "0.00")).isFailure should be(true)
+      Try(parser.parse(parser.timeExp, "00 00")).isFailure should be(true)
+      Try(parser.parse(parser.timeExp, "59")).isFailure should be(true)
+      Try(parser.parse(parser.timeExp, "000:00")).isFailure should be(true)
+      Try(parser.parse(parser.timeExp, "12:1")).isFailure should be(true)
+      Try(parser.parse(parser.timeExp, "19:61")).isFailure should be(true)
+      Try(parser.parse(parser.timeExp, "25:00")).isFailure should be(true)
+      Try(parser.parse(parser.timeExp, "35:00")).isFailure should be(true)
+      Try(parser.parse(parser.timeExp, "23:61")).isFailure should be(true)
     }
   }
 
@@ -46,7 +48,7 @@ class TriggerParserSpec extends AnyWordSpec with Matchers{
       parser.parse(parser.timeClause, "time is 19:50").get.check(Hours(19)+Minutes(50)) should be(true)
     }
     "not accept expressions with negative time" in {
-      parser.parse(parser.timeClause, "time is -19:59").successful should be(false)
+      Try(parser.parse(parser.timeClause, "time is -19:59")).isFailure should be(true)
     }
   }
 

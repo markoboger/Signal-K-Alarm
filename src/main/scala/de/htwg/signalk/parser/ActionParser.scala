@@ -1,16 +1,17 @@
 package de.htwg.signalk.parser
 
 import squants.time.{Minutes, Seconds}
+import ParserFailureMessages._
 
 import scala.util.parsing.combinator.RegexParsers
 
 trait ActionParser extends RegexParsers {
-  def sentenceStart = (", " ~ "then") | "and"
+  def sentenceStart = ("," ~ "then") | "and"
 
   val numberConversion = Map("one" -> 1, "two" -> 2, "three" -> 3, "four" -> 4,"five" -> 5,"six" -> 6,"seven" -> 7,"eight" -> 8,"nine" -> 9, "ten" -> 10)
   def minutesMin = "[0-9]*".r ~ "min" ^^ { case minutes ~ _ => Minutes(minutes.toInt) }
   def secondsSec = "[0-9]*".r ~ "sec" ^^ { case seconds ~ _ => Seconds(seconds.toInt) }
-  def maxMinutes = "max" ~ minutesMin ^^ { case _ ~ minute => SoundMax(minute).asInstanceOf[SoundAmount] }
+  def maxMinutes= "max"~ minutesMin ^^ { case _ ~ minute => SoundMax(minute).asInstanceOf[SoundAmount] }
   def maxSeconds = "max" ~ secondsSec  ^^ { case _ ~ seconds=> SoundMax(seconds).asInstanceOf[SoundAmount] }
   def maxTimes = maxMinutes | maxSeconds
   def nTimes = "[0-9]*".r ~ "times" ^^ { case n ~ _ => SoundRepeat(n.toInt).asInstanceOf[SoundAmount] }
@@ -19,8 +20,8 @@ trait ActionParser extends RegexParsers {
   def twice = "twice" ^^ { case _ => SoundRepeat(2).asInstanceOf[SoundAmount] }
   def amountOfTimes = once | twice | nTimes | nTimesWord
   def untilChecked = "until checked" ^^ { case _ => SoundUntilChecked().asInstanceOf[SoundAmount] }
-  def soundExp = amountOfTimes | maxTimes | untilChecked
-  def soundType = "Alarm" | "Beep" | "Bell" | "Horn" | "Whistle"
+  def soundExp = (amountOfTimes | maxTimes | untilChecked).withFailureMessage(soundExpFailureMessage)
+  def soundType = ("Alarm" | "Beep" | "Bell" | "Horn" | "Whistle").withFailureMessage(soundTypeFailureMessage)
   def soundClause = "sound" ~ soundType ~ soundExp ^^ { case _ ~ soundType ~ soundExp => SoundAction(soundType, soundExp) }
 
   def warnMessage = ".*".r
