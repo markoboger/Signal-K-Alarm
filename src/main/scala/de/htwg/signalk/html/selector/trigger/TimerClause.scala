@@ -1,4 +1,5 @@
 package de.htwg.signalk.html.selector.trigger
+
 import de.htwg.signalk.html.Util.buildSelectorWithID
 import org.scalajs.dom.raw.HTMLElement
 import scalatags.JsDom.all._

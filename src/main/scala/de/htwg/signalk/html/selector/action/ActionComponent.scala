@@ -28,7 +28,10 @@ class ActionComponent(val num: Int, val actionContainer: ActionsContainer) exten
   override def html: HTMLElement = {
     div(
       id := _id,
-      div(span(if(num == 0) {", then "} else { ", and " }, selector), clause.html, removeButton),
+      div(
+        if(num == 0) { span(", then " , selector, clause.html) }
+        else { span(", and ", selector, clause.html, removeButton) }
+      ),
     ).render
   }
 

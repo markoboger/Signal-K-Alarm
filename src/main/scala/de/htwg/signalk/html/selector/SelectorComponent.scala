@@ -22,7 +22,6 @@ class SelectorComponent extends HTMLComponent {
 
   def retrieveRule = trigger.retrieveTrigger + action.retrieveAction
   def addAction = action.addAction
-
   def reset = {
     update(() => {
       trigger = new TriggerComponent

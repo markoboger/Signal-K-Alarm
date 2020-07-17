@@ -10,7 +10,6 @@ trait HTMLComponent {
 
   def update(callback: () => Unit): Unit = {
     callback()
-    println("id: " + _id)
     val element = document.getElementById(_id).asInstanceOf[HTMLElement]
     element.parentElement.replaceChild(html, element)
   }

@@ -5,7 +5,7 @@ import org.scalajs.dom.raw.HTMLElement
 import scalatags.JsDom.all._
 
 class ActionsContainer extends HTMLComponent {
-  override val _id: String = "action-container"
+  override val _id: String = "actions-container"
 
   val mainAction = new ActionComponent(0, this)
   var additionalActions: List[ActionComponent] = Nil
