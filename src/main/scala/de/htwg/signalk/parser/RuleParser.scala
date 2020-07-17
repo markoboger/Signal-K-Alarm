@@ -1,9 +1,15 @@
 package de.htwg.signalk.parser
 
+import scala.util.Try
 import scala.util.parsing.input.CharSequenceReader
 
 class RuleParser extends TriggerParser with ActionParser {
-  def actions = action+
+  def actions: Parser[List[Action]] = (action+) ~ ".*".r ^^ { case actions ~ rest => {
+    rest.trim.length match {
+      case 0 => actions
+      case _ => throw Try(this.parse(action, new CharSequenceReader(rest))).failed.get
+    }
+  }}
 
   def rule = trigger ~ actions ^^ { case trigger ~ actions => Rule(trigger, actions) }
 

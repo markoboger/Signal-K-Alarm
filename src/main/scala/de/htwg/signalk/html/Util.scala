@@ -1,7 +1,7 @@
 package de.htwg.signalk.html
 
-import org.scalajs.dom.{Event, document}
 import org.scalajs.dom.html.{Element, Select}
+import org.scalajs.dom.{Event, document}
 import scalatags.JsDom.all._
 
 object Util {
