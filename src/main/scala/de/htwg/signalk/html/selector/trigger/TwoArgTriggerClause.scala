@@ -1,44 +1,38 @@
 package de.htwg.signalk.html.selector.trigger
 
-import de.htwg.signalk.html.Util.buildSelectorWithID
-import org.scalajs.dom.Event
-import org.scalajs.dom.raw.{HTMLElement, HTMLSelectElement}
-import scalatags.JsDom.all._
+import de.htwg.signalk.html.Util
+import org.scalajs.dom.Element
+import org.scalajs.dom.raw.HTMLSelectElement
 
-trait TwoArgTriggerClause extends TriggerClause {
+abstract class TwoArgTriggerClause extends TriggerClause {
   val selector: HTMLSelectElement
 
-  val oneArgOptions = List("above", "below")
-  val twoArgOptions = List("between", "outside")
-
-  val argSelector = buildSelectorWithID(twoArgOptions:::oneArgOptions, "value-arg-selector")
+  val oneArgComparators = List("above", "below")
+  val twoArgComparators = List("between", "outside")
 
   var argOne: HTMLSelectElement
   var argTwo: HTMLSelectElement
 
-  argSelector.addEventListener("change", { _: Event => {
-    if (twoArgOptions.contains(argSelector.value)) {
-      argTwo.parentElement.removeAttribute("hidden")
-    } else {
-      argTwo.parentElement.setAttribute("hidden", "")
-    }
-  }})
+  val isLabel = Util.buildCustomLabel("is")
+  val andLabel = Util.buildCustomLabel("and")
+  val comparatorSelector = Util.buildCustomSelector(twoArgComparators:::oneArgComparators)
 
-  override def html(): HTMLElement = {
-    span(
-      id := _id,
-      span(selector),
-      span(
-        " is ",
-        span(argSelector),
-        span(argOne),
-        span(" and ", argTwo)
-      )
-    ).render
+  comparatorSelector.onchange = _ => {
+    if (twoArgComparators.contains(comparatorSelector.value)) {
+      andLabel.removeAttribute("hidden")
+      argTwo.removeAttribute("hidden")
+    } else {
+      andLabel.setAttribute("hidden", "")
+      argTwo.setAttribute("hidden", "")
+    }
+  }
+
+  override def renderAll: List[Element] = {
+    List(selector, isLabel, comparatorSelector, argOne, andLabel, argTwo)
   }
 
   override def retrieveTrigger: String = {
-    val argResult = if (argTwo.parentElement.hasAttribute("hidden")) { argOne.value } else { argOne.value + " and " + argTwo.value }
-    "When value of " + selector.value + " is " + argSelector.value + " " + argResult
+    val argResult = if (argTwo.hasAttribute("hidden")) { argOne.value } else { argOne.value + " and " + argTwo.value }
+    "When value of " + selector.value + " is " + comparatorSelector.value + " " + argResult
   }
 }

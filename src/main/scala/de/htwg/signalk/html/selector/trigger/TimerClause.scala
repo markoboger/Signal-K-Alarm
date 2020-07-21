@@ -1,18 +1,16 @@
 package de.htwg.signalk.html.selector.trigger
 
-import de.htwg.signalk.html.Util.buildSelectorWithID
-import org.scalajs.dom.raw.HTMLElement
-import scalatags.JsDom.all._
+import de.htwg.signalk.html.Util
+import org.scalajs.dom.Element
 
 class TimerClause extends TriggerClause {
-  val timerArg = buildSelectorWithID(List("0:05", "-0:05"), "timerArg")
+  val timerValues = List("0:05", "-0:05")
 
-  override def html: HTMLElement = {
-    span(
-      id := _id,
-      span(" is ", span(timerArg))
-    ).render
-  }
+  val isLabel = Util.buildCustomLabel("is")
+  val argTimer = Util.buildCustomSelector(timerValues)
 
-  override def retrieveTrigger: String = "When timer is " + timerArg.value
+
+  override def retrieveTrigger: String = "When timer is " + argTimer.value
+
+  override def renderAll: List[Element] = List(isLabel, argTimer)
 }

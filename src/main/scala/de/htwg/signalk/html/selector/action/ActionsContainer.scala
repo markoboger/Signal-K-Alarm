@@ -10,11 +10,11 @@ class ActionsContainer extends HTMLComponent {
   val mainAction = new ActionComponent(0, this)
   var additionalActions: List[ActionComponent] = Nil
 
-  override def html: HTMLElement = {
+  override def render: HTMLElement = {
     div(
       id := _id,
-      mainAction.html,
-      for(action <- additionalActions) yield action.html
+      mainAction.render,
+      for(action <- additionalActions) yield action.render
     ).render
   }
 

@@ -2,21 +2,23 @@ package de.htwg.signalk.html.rule
 
 import de.htwg.signalk.html.HTMLComponent
 import org.scalajs.dom.raw.HTMLElement
-import scalatags.JsDom.all._
+import com.karasiq.bootstrap4.Bootstrap.default._
+import scalaTags.all._
 
 class RulesContainer extends HTMLComponent {
   override val _id: String = "rules-container"
 
-  var rules: List[RuleSentenceComponent] = Nil
+  var rules: List[RuleComponent] = Nil
 
-  override def html: HTMLElement = {
+  override def render: HTMLElement = {
     div(
       id:=_id,
-      for(rule <- rules) yield rule.html
+      paddingTop:="10px",
+      for(rule <- rules) yield rule.render
     ).render
   }
 
-  def addRule(ruleText: String) = update(() => rules = new RuleSentenceComponent(ruleText, this)::rules)
-  def addRule() = update(() => rules = new RuleSentenceComponent("", this)::rules)
-  def removeRule(rule: RuleSentenceComponent) = update(() => rules = rules.filterNot(elm => elm == rule))
+  def addRule(ruleText: String) = update(() => rules = new RuleComponent(ruleText, this)::rules)
+  def addRule() = update(() => rules = new RuleComponent("", this)::rules)
+  def removeRule(rule: RuleComponent) = update(() => rules = rules.filterNot(elm => elm == rule))
 }

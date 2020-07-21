@@ -1,8 +1,16 @@
 package de.htwg.signalk.html.selector.action
-import org.scalajs.dom.raw.HTMLElement
+import de.htwg.signalk.html.Util
+import org.scalajs.dom.Element
+import rx.Var
 
 class LogClause(override val num: Int)  extends ActionClause(num: Int) {
-  override def retrieveAction: String = ???
+  val logMessage = Var("")
+  val logInput = Util.buildCustomInput(logMessage)
 
-  override def html: HTMLElement = ???
+  def retrieveAction: String = {
+    val start = if (num == 0) { ", then" } else { " and" }
+    start + " warn " + logMessage.now
+  }
+
+  override def renderAll: List[Element] = List(logInput)
 }

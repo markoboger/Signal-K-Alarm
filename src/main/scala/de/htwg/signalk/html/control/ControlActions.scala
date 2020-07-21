@@ -2,7 +2,6 @@ package de.htwg.signalk.html.control
 
 import de.htwg.signalk.html.rule.RulesContainer
 import de.htwg.signalk.html.selector.SelectorComponent
-import de.htwg.signalk.html.selector.action.ActionsContainer
 
 class ControlActions(val retrieveRule: () => String,
                      val addAction: () => Unit,

@@ -1,37 +1,24 @@
 package de.htwg.signalk.html
 
-import org.scalajs.dom.html.{Element, Select}
-import org.scalajs.dom.{Event, document}
-import scalatags.JsDom.all._
+import com.karasiq.bootstrap4.Bootstrap.default._
+import org.scalajs.dom.raw.HTMLSelectElement
+import rx.Var
+import scalaTags.all._
 
 object Util {
-  def buildSelectorWithID(options: List[String], selectorId: String) = {
+  def buildCustomSelector(options: List[String]): HTMLSelectElement = {
     select(
-      id := selectorId,
+      minWidth := 75, minHeight := 38,
+      `class`:="custom-select",
       for(opt <- options) yield option(opt)
     ).render
   }
 
-  def buildSelectorWithTag(options: List[String], selectorTag: String) = {
-    val selector = select(for(opt <- options) yield option(opt)).render
-    selector.classList.add(selectorTag)
-    selector
+  def buildCustomLabel(text: String): Element = {
+    val input = FormInputGroup.text(minWidth := 75, minHeight := 38, Var(text).reactiveInput).render
+    input.setAttribute("disabled", "")
+    input
   }
 
-  def createOnChoiceSwitch(selector: Select, replaceElementId: String, replaceTargetElement: Element, selectValues: List[String], replaceElements: List[Element]): Unit = {
-    selector.addEventListener("change", { _: Event => {
-      val elementToReplace = Option(document.getElementById(replaceElementId))
-      val selectedValue = selector.value
-
-      for (i <- selectValues.indices) {
-        if(selectValues(i) == selectedValue) {
-          if (elementToReplace.isEmpty) {
-            replaceTargetElement.appendChild(replaceElements(i))
-          } else {
-            replaceTargetElement.replaceChild(replaceElements(i), elementToReplace.get)
-          }
-        }
-      }
-    }})
-  }
+  def buildCustomInput(text: Var[String]): Element = FormInputGroup.text(minWidth := 75, minHeight := 38, text.reactiveInput).render
 }

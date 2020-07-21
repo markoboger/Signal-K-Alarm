@@ -11,6 +11,7 @@ libraryDependencies += "org.scala-lang.modules" %%% "scala-parser-combinators" %
 libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.0" % "test"
 libraryDependencies += "org.typelevel"  %%% "squants"  % "1.6.0"
 libraryDependencies += "com.lihaoyi" %%% "scalatags" % "0.8.2"
+libraryDependencies += "com.github.karasiq" %%% "scalajs-bootstrap-v4" % "2.3.5"
 
 // This is an application with a main method
 scalaJSUseMainModuleInitializer := true

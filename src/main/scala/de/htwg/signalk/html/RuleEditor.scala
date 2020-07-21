@@ -6,6 +6,8 @@ import de.htwg.signalk.html.selector.SelectorComponent
 import org.scalajs.dom.document
 
 import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
+import com.karasiq.bootstrap4.Bootstrap.default._
+import scalaTags.all._
 
 @JSExportTopLevel("RuleEditor")
 object RuleEditor {
@@ -17,9 +19,15 @@ object RuleEditor {
   @JSExport
   def render(): Unit = {
     if (document.getElementById("alarm-component") != null) {
-      document.getElementById("alarm-component").appendChild(selector.html)
-      document.getElementById("alarm-component").appendChild(controlButtons.html)
-      document.getElementById("alarm-component").appendChild(rules.html)
+
+      val controlArea = GridSystem.row(
+        GridSystem.col(12)(selector.render, textAlign.center),
+        GridSystem.col(12)(controlButtons.render, textAlign.center),
+        borderBottom := "3px solid"
+      )
+
+      document.getElementById("alarm-component").appendChild(controlArea.render)
+      document.getElementById("alarm-component").appendChild(rules.render)
     }
   }
 }

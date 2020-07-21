@@ -1,13 +1,11 @@
 package de.htwg.signalk.html.selector.trigger
 
-import de.htwg.signalk.html.Util.buildSelectorWithID
-import org.scalajs.dom.{Event, document}
-import org.scalajs.dom.raw.{HTMLElement, HTMLSelectElement}
-import scalatags.JsDom.all._
+import de.htwg.signalk.html.{RuleEditor, Util}
+import org.scalajs.dom.raw.HTMLSelectElement
 
 class ValueClause extends TwoArgTriggerClause {
   val possibleValues = List("Depth", "Battery", "Fuel", "Performance", "TWA", "TWD", "SOG", "STW", "AWS", "TWS", "VMG", "Air", "Water")
-  override val selector = buildSelectorWithID(possibleValues, "value-selector")
+  override val selector = Util.buildCustomSelector(possibleValues)
 
   val possibleValueArgs: List[List[String]] = List(
     List("2 m", "5 m", "10 m", "25 m", "50 m", "100 m"), // Depth
@@ -25,17 +23,16 @@ class ValueClause extends TwoArgTriggerClause {
     List("-10 °C", "0 °C", "10 °C", "20 °C", "30 °C", "40 °C", "50 °C", "80 °C", "100 °C") // Water
   )
 
-  var argOne: HTMLSelectElement = buildSelectorWithID(List("2 m", "5 m", "10 m", "25 m", "50 m", "100 m"), "value-arg-one")
-  var argTwo: HTMLSelectElement = buildSelectorWithID(List("2 m", "5 m", "10 m", "25 m", "50 m", "100 m"), "value-arg-two")
+  var argOne: HTMLSelectElement = Util.buildCustomSelector(List("2 m", "5 m", "10 m", "25 m", "50 m", "100 m"))
+  var argTwo: HTMLSelectElement = Util.buildCustomSelector(List("2 m", "5 m", "10 m", "25 m", "50 m", "100 m"))
 
-  selector.addEventListener("change", { _: Event => {
+  selector.onchange = _ => {
     for (i <- possibleValues.indices) {
       if(possibleValues(i) == selector.value) {
-        update(() => {
-          argOne = buildSelectorWithID(possibleValueArgs(i), "value-arg-one")
-          argTwo = buildSelectorWithID(possibleValueArgs(i), "value-arg-two")
-        })
+        argOne = Util.buildCustomSelector(possibleValueArgs(i))
+        argTwo = Util.buildCustomSelector(possibleValueArgs(i))
+        RuleEditor.selector.update()
       }
     }
-  }})
+  }
 }

@@ -9,14 +9,14 @@ import scalatags.JsDom.all._
 class SelectorComponent extends HTMLComponent {
   override val _id: String = "selector"
 
-  private var trigger = new TriggerComponent
+  private var trigger = new TriggerComponent(this)
   private var action = new ActionsContainer
 
-  override def html: HTMLElement = {
+  override def render: HTMLElement = {
     div(
       id:=_id,
-      trigger.html,
-      action.html
+      trigger.render,
+      action.render
     ).render
   }
 
@@ -24,7 +24,7 @@ class SelectorComponent extends HTMLComponent {
   def addAction = action.addAction
   def reset = {
     update(() => {
-      trigger = new TriggerComponent
+      trigger = new TriggerComponent(this)
       action = new ActionsContainer
     })
   }

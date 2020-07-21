@@ -1,19 +1,22 @@
 package de.htwg.signalk.html.selector.action
 
-import de.htwg.signalk.html.Util.buildSelectorWithID
-import de.htwg.signalk.html.HTMLComponent
-import org.scalajs.dom.Event
-import org.scalajs.dom.raw.HTMLElement
-import scalatags.JsDom.all._
+import de.htwg.signalk.html.{HTMLComponent, Util}
+import com.karasiq.bootstrap4.Bootstrap.default._
+import scalaTags.all._
 
 class ActionComponent(val num: Int, val actionContainer: ActionsContainer) extends HTMLComponent {
   override val _id: String = "action-" + num
 
-  val selector = buildSelectorWithID(List("sound", "warn", "log", "send", "activate", "deactivate", "reset", "restart"), "action-selector")
   var clause: ActionClause = new SoundClause(num)
+  val selectValues = List("sound", "warn", "log", "send", "activate", "deactivate", "reset", "restart")
 
-  selector.addEventListener("change", { _: Event => {
-    update(() => selector.value match {
+  val selector = Util.buildCustomSelector(selectValues)
+
+  val sentenceStart = if (num == 0) { ", then" } else { ", and" }
+  val sentenceLabel = Util.buildCustomLabel(sentenceStart)
+
+  selector.onchange = _ => {
+    actionContainer.update(() => selector.value match {
       case "sound" => clause = new SoundClause(num)
       case "warn" => clause = new WarnClause(num)
       case "log" => clause = new LogClause(num)
@@ -23,27 +26,17 @@ class ActionComponent(val num: Int, val actionContainer: ActionsContainer) exten
       case "reset" => clause = new ResetClause(num)
       case "restart" => clause = new RestartClause(num)
     })
-  }})
-
-  override def html: HTMLElement = {
-    div(
-      id := _id,
-      div(
-        if(num == 0) { span(", then " , selector, clause.html) }
-        else { span(", and ", selector, clause.html, removeButton) }
-      ),
-    ).render
   }
 
-  val removeButton = {
-    span(button(
-      "-"
-    )).render
-  }
+  val removeButton = Button(ButtonStyle.primary)("-", onclick := Callback.onClick(_ => removeAction)).render
 
-  removeButton.addEventListener("click", { _: Event => {
-    removeAction
-  }})
+  override def render = {
+    if (num == 0) {
+      FormInputGroup((), id := _id, sentenceLabel, selector, for(element <- clause.renderAll) yield element).render
+    } else {
+      FormInputGroup((), id := _id, sentenceLabel, selector, for(element <- clause.renderAll) yield element, removeButton).render
+    }
+  }
 
   def retrieveAction = clause.retrieveAction
   def removeAction = actionContainer.removeAction(this)
