@@ -1,24 +1,51 @@
-enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
-
 name := "Signal-K-Alarm"
-
 version := "0.1"
-
 scalaVersion := "2.12.10"
 
-libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "1.0.0"
-libraryDependencies += "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.2"
-libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.0" % "test"
-libraryDependencies += "org.typelevel"  %%% "squants"  % "1.6.0"
-libraryDependencies += "com.lihaoyi" %%% "scalatags" % "0.8.2"
-libraryDependencies += "com.github.karasiq" %%% "scalajs-bootstrap-v4" % "2.3.5"
+lazy val parser = project
+  .in(file("parser"))
+  .settings(
+    libraryDependencies ++= parserDependencies.value
+  )
 
-// This is an application with a main method
-scalaJSUseMainModuleInitializer := true
+lazy val parserjs = project
+  .in(file("parser"))
+  .settings(
+    libraryDependencies ++= parserjsDependencies.value,
+    target := file("frontend/target/parserjs")
+  )
+  .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
 
-skip in packageJSDependencies := false
+lazy val frontend = project
+  .settings(
+    name := "frontend",
+    jsSettings,
+    libraryDependencies ++= frontendDependencies.value,
+  )
+  .dependsOn(parserjs)
+  .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
 
-jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv()
+lazy val parserDependencies = Def.setting(Seq(
+  "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
+  "org.scalatest" %% "scalatest" % "3.1.0" % "test",
+  "org.typelevel"  %% "squants"  % "1.6.0"
+))
 
+lazy val parserjsDependencies = Def.setting(Seq(
+  "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.2",
+  "org.scalatest" %%% "scalatest" % "3.1.0" % "test",
+  "org.typelevel"  %%% "squants"  % "1.6.0"
+))
 
+lazy val frontendDependencies = Def.setting(Seq(
+  "org.scala-js" %%% "scalajs-dom" % "1.0.0",
+  "com.lihaoyi" %%% "scalatags" % "0.8.2",
+  "com.github.karasiq" %%% "scalajs-bootstrap-v4" % "2.3.5"
+))
+
+lazy val jsSettings = Seq(
+  scalaJSUseMainModuleInitializer := true,
+  skip in packageJSDependencies := false,
+  jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv()
+)
 
