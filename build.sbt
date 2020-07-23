@@ -39,8 +39,7 @@ lazy val parserjsDependencies = Def.setting(Seq(
 
 lazy val frontendDependencies = Def.setting(Seq(
   "org.scala-js" %%% "scalajs-dom" % "1.0.0",
-  "com.lihaoyi" %%% "scalatags" % "0.8.2",
-  "com.github.karasiq" %%% "scalajs-bootstrap-v4" % "2.3.5"
+  "com.lihaoyi" %%% "scalatags" % "0.8.2"
 ))
 
 lazy val jsSettings = Seq(

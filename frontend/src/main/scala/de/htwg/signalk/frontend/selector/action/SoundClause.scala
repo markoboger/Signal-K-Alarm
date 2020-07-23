@@ -1,14 +1,15 @@
 package de.htwg.signalk.frontend.selector.action
 
-import de.htwg.signalk.frontend.Util
+import de.htwg.signalk.frontend.BootStrapComponents.BootStrapSelector
+import de.htwg.signalk.parser.RuleConstants.{SoundType, SoundExampleArgs}
 import org.scalajs.dom.Element
 
-class SoundClause(override val num: Int)  extends ActionClause(num: Int) {
-  val selector = Util.buildCustomSelector(List("Alarm", "Beep", "Bell", "Horn", "Whistle"))
-  val soundArg = Util.buildCustomSelector(List("once", "twice", "three times", "max 20 sec", "max 1 min", "until checked"))
+class SoundClause(override val isMainAction: Boolean)  extends ActionClause(isMainAction) {
+  val selector = BootStrapSelector(SoundType)
+  val soundArg = BootStrapSelector(SoundExampleArgs)
 
   def retrieveAction: String = {
-    val start = if (num == 0) { ", then" } else { " and" }
+    val start = if (isMainAction) { ", then" } else { " and" }
     s"$start sound ${selector.value} ${soundArg.value}"
   }
 

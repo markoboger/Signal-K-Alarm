@@ -49,8 +49,8 @@ trait TriggerParser extends CustomParser {
     def value = valueHole ~ opt(valueFracture) ^^ { case hole ~ fract => hole.toDouble + fract.getOrElse(0.0) }
     def sign = "[-]".r ^^ { _ => -1 }
     def signedValue = opt(sign) ~ value ^^ { case sign ~ value => sign.getOrElse(1) * value }
-    def oneArgOp = orExpressionFromList(OneArg)
-    def twoArgOp = orExpressionFromList(TwoArg)
+    def oneArgOp = orExpressionFromList(OneArgOp)
+    def twoArgOp = orExpressionFromList(TwoArgOp)
     def unitValue:Parser[A]
     def oneArgExp = oneArgOp ~ unitValue ^^ {
       case "below" ~ value => OrderOperator[A].below(value)(_)

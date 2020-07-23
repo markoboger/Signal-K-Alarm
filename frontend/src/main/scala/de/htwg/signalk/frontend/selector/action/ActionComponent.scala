@@ -1,43 +1,32 @@
 package de.htwg.signalk.frontend.selector.action
 
-import de.htwg.signalk.frontend.{HTMLComponent, Util}
-import com.karasiq.bootstrap4.Bootstrap.default._
-import scalaTags.all._
+import de.htwg.signalk.frontend.{HTMLComponent, RuleEditor}
+import de.htwg.signalk.frontend.BootStrapComponents.{BootStrapButton, BootStrapFormGroup, BootStrapInput, BootStrapInputGroup, BootStrapSelector}
+import de.htwg.signalk.parser.RuleConstants.ActionType
+import scalatags.JsDom.all._
 
-class ActionComponent(val num: Int, val actionContainer: ActionsContainer) extends HTMLComponent {
-  override val _id: String = s"action-$num"
+class ActionComponent(val isMainAction: Boolean = false, val actionsContainer: ActionsContainer) extends HTMLComponent {
+  var clause: ActionClause = new SoundClause(isMainAction)
+  val typeToClauseMap = Map("sound" -> new SoundClause(isMainAction), "warn" -> new WarnClause(isMainAction), "log" -> new LogClause(isMainAction),
+    "send" -> new SendClause(isMainAction), "activate" -> new ActivateClause(isMainAction), "deactivate" -> new DeactivateClause(isMainAction),
+    "reset" -> new ResetClause(isMainAction), "restart" -> new RestartClause(isMainAction))
 
-  var clause: ActionClause = new SoundClause(num)
-  val selectValues = List("sound", "warn", "log", "send", "activate", "deactivate", "reset", "restart")
+  val selector = BootStrapSelector(ActionType)
 
-  val selector = Util.buildCustomSelector(selectValues)
+  val sentenceStart = if (isMainAction) { ", then" } else { ", and" }
+  val sentenceLabel = BootStrapInput(sentenceStart, disabled)
+  val removeButton = BootStrapButton("-", "primary", onclick := { () => removeAction }).render
 
-  val sentenceStart = if (num == 0) { ", then" } else { ", and" }
-  val sentenceLabel = Util.buildCustomLabel(sentenceStart)
-
-  selector.onchange = _ => {
-    actionContainer.update(() => selector.value match {
-      case "sound" => clause = new SoundClause(num)
-      case "warn" => clause = new WarnClause(num)
-      case "log" => clause = new LogClause(num)
-      case "send" => clause = new SendClause(num)
-      case "activate" => clause = new ActivateClause(num)
-      case "deactivate" => clause = new DeactivateClause(num)
-      case "reset" => clause = new ResetClause(num)
-      case "restart" => clause = new RestartClause(num)
-    })
-  }
-
-  val removeButton = Button(ButtonStyle.primary)("-", onclick := Callback.onClick(_ => removeAction)).render
+  selector.onchange = _ => { RuleEditor.update(() => clause = typeToClauseMap.getOrElse(selector.value, clause)) }
 
   override def render = {
-    if (num == 0) {
-      FormInputGroup((), id := _id, sentenceLabel, selector, for(element <- clause.renderAll) yield element).render
+    if (isMainAction) {
+      BootStrapFormGroup(BootStrapInputGroup(sentenceLabel, selector, for(element <- clause.renderAll) yield element))
     } else {
-      FormInputGroup((), id := _id, sentenceLabel, selector, for(element <- clause.renderAll) yield element, removeButton).render
+      BootStrapFormGroup(BootStrapInputGroup(sentenceLabel, selector, for(element <- clause.renderAll) yield element, removeButton))
     }
   }
 
   def retrieveAction = clause.retrieveAction
-  def removeAction = actionContainer.removeAction(this)
+  def removeAction = actionsContainer.removeAction(this)
 }

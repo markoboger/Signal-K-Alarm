@@ -1,22 +1,23 @@
 package de.htwg.signalk.frontend.selector.trigger
 
-import de.htwg.signalk.frontend.Util
+import de.htwg.signalk.frontend.BootStrapComponents.{BootStrapInput, BootStrapSelector}
 import de.htwg.signalk.parser.RuleConstants._
 import org.scalajs.dom.Element
 import org.scalajs.dom.raw.HTMLSelectElement
+import scalatags.JsDom.all._
 
-abstract class TwoArgTriggerClause extends TriggerClause {
+trait TwoArgTriggerClause extends TriggerClause {
   val selector: HTMLSelectElement
 
   var argOne: HTMLSelectElement
   var argTwo: HTMLSelectElement
 
-  val isLabel = Util.buildCustomLabel("is")
-  val andLabel = Util.buildCustomLabel("and")
-  val comparatorSelector = Util.buildCustomSelector(TwoArg:::OneArg)
+  val isLabel = BootStrapInput("is", disabled)
+  val andLabel = BootStrapInput("and", disabled)
+  val comparatorSelector = BootStrapSelector(TwoArgOp:::OneArgOp)
 
   comparatorSelector.onchange = _ => {
-    if (TwoArg.contains(comparatorSelector.value)) {
+    if (TwoArgOp.contains(comparatorSelector.value)) {
       andLabel.removeAttribute("hidden")
       argTwo.removeAttribute("hidden")
     } else {

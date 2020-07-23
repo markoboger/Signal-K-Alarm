@@ -1,29 +1,21 @@
 package de.htwg.signalk.frontend.selector.trigger
 
-import de.htwg.signalk.frontend.{HTMLComponent, Util}
-import org.scalajs.dom.Event
-import com.karasiq.bootstrap4.Bootstrap.default._
-import scalaTags.all._
+import de.htwg.signalk.frontend.{HTMLComponent, RuleEditor}
+import de.htwg.signalk.parser.RuleConstants.TriggerType
+import de.htwg.signalk.frontend.BootStrapComponents.{BootStrapFormGroup, BootStrapInput, BootStrapInputGroup, BootStrapInputGroupAddon, BootStrapSelector}
+import scalatags.JsDom.all._
 
-class TriggerComponent(val parent: HTMLComponent) extends HTMLComponent {
-  override val _id: String = "trigger"
-
+class TriggerComponent extends HTMLComponent {
   var clause: TriggerClause = new ValueClause
-  val selectValues = List("value of", "distance to", "time", "timer")
+  val typeToClauseMap = Map("value of" -> new ValueClause, "distance to" -> new DistanceClause, "time" -> new TimeClause, "timer" -> new TimerClause)
 
-  val selector = Util.buildCustomSelector(selectValues)
-  val whenLabel = Util.buildCustomLabel("When")
+  val selector = BootStrapSelector(TriggerType)
+  val whenLabel = BootStrapInput("When", disabled)
 
-  selector.addEventListener("change", { _: Event => {
-    parent.update(() => selector.value match {
-      case "value of" => clause = new ValueClause
-      case "distance to" => clause = new DistanceClause
-      case "time" => clause = new TimeClause
-      case "timer" => clause = new TimerClause
-    })
-  }})
+  selector.onchange = _ => { RuleEditor.update(() => clause = typeToClauseMap.getOrElse(selector.value, clause)) }
 
-  def render = FormInputGroup((), id := _id, whenLabel, selector, for(element <- clause.renderAll) yield element).render
+  def render = BootStrapFormGroup(BootStrapInputGroup(whenLabel, selector, for(element <- clause.renderAll) yield element))
+
 
   def retrieveTrigger = clause.retrieveTrigger
 }

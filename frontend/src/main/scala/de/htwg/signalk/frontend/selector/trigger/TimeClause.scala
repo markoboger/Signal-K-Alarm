@@ -1,24 +1,19 @@
 package de.htwg.signalk.frontend.selector.trigger
 
-import de.htwg.signalk.frontend.Util
+import de.htwg.signalk.frontend.BootStrapComponents.{BootStrapInput, BootStrapSelector}
 import org.scalajs.dom.Element
+import scalatags.JsDom.all._
 
 class TimeClause extends TriggerClause {
+  val hours = (1 to 23).toList.map(_.toString)
+  val minutes = "00"::"05"::(10 to 55 by 5).toList.map(_.toString)
 
-  val hours = List("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
-    "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23")
+  val isLabel = BootStrapInput("is", disabled)
+  val colonLabel = BootStrapInput(":", disabled)
+  val argHours = BootStrapSelector(hours)
+  val argMinutes = BootStrapSelector(minutes)
 
-  val minutes = List("00", "10", "15", "20", "30", "40", "45", "50")
-
-  val timeArgHours = Util.buildCustomSelector(hours)
-  val timeArgMinutes = Util.buildCustomSelector(minutes)
-
-  val isLabel = Util.buildCustomLabel("is")
-  val colonLabel = Util.buildCustomLabel(":")
-  val argHours = Util.buildCustomSelector(hours)
-  val argMinutes = Util.buildCustomSelector(minutes)
-
-  override def retrieveTrigger: String = "When time is " + timeArgHours.value + ":" + timeArgMinutes.value
+  override def retrieveTrigger: String = "When time is " + argHours.value + ":" + argMinutes.value
 
   override def renderAll: List[Element] = List(isLabel, argHours, colonLabel, argMinutes)
 }
