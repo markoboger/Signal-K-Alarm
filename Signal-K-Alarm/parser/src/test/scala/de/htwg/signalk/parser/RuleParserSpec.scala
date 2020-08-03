@@ -37,7 +37,7 @@ class RuleParserSpec extends AnyWordSpec with Matchers {
 
     "not accept invalid expressions" in {
       Try(parser.parse(parser.rule,"When value of Fuel is below 20%, then sound Ala once")).failed.get.getMessage should be(SoundTypeFailureMessage)
-      Try(parser.parse(parser.rule,"When value of Fuel is below 20%, then sound Alarm oxx times")).failed.get.getMessage should be(SoundAmountFailureMessage)
+      Try(parser.parse(parser.rule,"When value of Fuel is below 20%, then sound Alar oxx times")).failed.get.getMessage should be("SoundAmountFailureMessage")
     }
   }
 }

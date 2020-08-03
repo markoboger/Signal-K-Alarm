@@ -11,7 +11,7 @@ class RuleParser extends TriggerParser with ActionParser {
     }
   }}
 
-  def rule = trigger ~ actions ^^ { case trigger ~ actions => Rule(trigger, actions) }
+  def rule = trigger ~ actions <~ opt("") ^^ { case trigger ~ actions => Rule(trigger, actions) }
 
   override def parse[T](p: Parser[T], in: java.lang.CharSequence): ParseResult[T] = {
     val parseResult = p(new CharSequenceReader(in))

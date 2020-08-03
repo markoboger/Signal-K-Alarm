@@ -7,7 +7,7 @@ import de.htwg.signalk.frontend.selector.SelectorComponent
 import org.scalajs.dom.document
 
 import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
-import org.scalajs.dom.raw.HTMLElement
+import org.scalajs.dom.raw.{HTMLElement, XMLHttpRequest}
 import scalatags.JsDom.all._
 
 @JSExportTopLevel("RuleEditor")

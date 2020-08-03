@@ -14,38 +14,38 @@ trait TriggerParser extends CustomParser {
   def hour = hour01 | hour2
   def minute = "[0-5][0-9]".r ^^ { string => Minutes(string.toInt) }
   def timeExp = hour ~ minute ^^ { case hours ~ minutes => hours + minutes }
-  def timeClause = "time" ~ "is" ~ timeExp ^^ { case t ~ _ ~ time => new Trigger[Time](t, TimeOperator[Time].is(time)(_)) }
+  def timeCondition = "time" ~ "is" ~ timeExp ^^ { case t ~ _ ~ time => new Trigger[Time](t, TimeOperator[Time].is(time)(_)) }
 
-  def timerClause = "timer" ~ "is" ~ opt(sign) ~ timeExp ^^ { case t ~ _ ~ sign ~ time => new Trigger[Time](t, TimeOperator[Time].is(sign.getOrElse(1) * time)(_)) }
+  def timerCondition = "timer" ~ "is" ~ opt(sign) ~ timeExp ^^ { case t ~ _ ~ sign ~ time => new Trigger[Time](t, TimeOperator[Time].is(sign.getOrElse(1) * time)(_)) }
 
   def depthExp = DepthParser().argExp.asInstanceOf[Parser[Length => Boolean]]
-  def depthClause = "value" ~ "of" ~ "Depth" ~ "is" ~ depthExp ^^ { case _ ~ _ ~ depth ~ _ ~ depthExp => new Trigger[Length](depth, depthExp) }
+  def depthCondition = "value" ~ "of" ~ "Depth" ~ "is" ~ depthExp ^^ { case _ ~ _ ~ depth ~ _ ~ depthExp => new Trigger[Length](depth, depthExp) }
 
   def distanceExp = DistanceParser().argExp.asInstanceOf[Parser[Length => Boolean]]
   def distanceType = orExpressionFromList(DistanceType)
-  def distanceClause = "distance" ~ "to" ~ distanceType ~ "is " ~ distanceExp ^^ { case _ ~ _ ~ distanceType ~ _ ~ distance => new Trigger[Length](distanceType, distance) }
+  def distanceCondition = "distance" ~ "to" ~ distanceType ~ "is " ~ distanceExp ^^ { case _ ~ _ ~ distanceType ~ _ ~ distance => new Trigger[Length](distanceType, distance) }
 
   def speedExp = SpeedParser().argExp.asInstanceOf[Parser[Velocity => Boolean]]
   def speedType = orExpressionFromList(SpeedType)
-  def speedClause = "value" ~ "of" ~ speedType ~ "is" ~ speedExp ^^ { case _ ~ _ ~ speedType ~ _ ~ speedExp => new Trigger[Velocity](speedType, speedExp) }
+  def speedCondition = "value" ~ "of" ~ speedType ~ "is" ~ speedExp ^^ { case _ ~ _ ~ speedType ~ _ ~ speedExp => new Trigger[Velocity](speedType, speedExp) }
 
   def angleExp = AngleParser().argExp.asInstanceOf[Parser[Angle=>Boolean]]
   def angleType = orExpressionFromList(AngleType)
-  def angleClause = "value" ~ "of" ~ angleType ~ "is" ~ angleExp ^^ { case _ ~ _ ~ angleType ~ _ ~ angleExp => new Trigger[Angle](angleType, angleExp) }
+  def angleCondition = "value" ~ "of" ~ angleType ~ "is" ~ angleExp ^^ { case _ ~ _ ~ angleType ~ _ ~ angleExp => new Trigger[Angle](angleType, angleExp) }
 
   def percentExp = PercentParser().argExp.asInstanceOf[Parser[Dimensionless => Boolean]]
   def percentType = orExpressionFromList(PercentType)
-  def percentClause = "value" ~ "of" ~ percentType ~ "is" ~ percentExp ^^ { case _ ~ _ ~ percentType ~ _ ~ percentExp => new Trigger[Dimensionless](percentType, percentExp) }
+  def percentCondition = "value" ~ "of" ~ percentType ~ "is" ~ percentExp ^^ { case _ ~ _ ~ percentType ~ _ ~ percentExp => new Trigger[Dimensionless](percentType, percentExp) }
 
   def tempExp =  TempParser().argExp.asInstanceOf[Parser[Temperature=>Boolean]]
   def tempType = orExpressionFromList(TempType)
-  def tempClause = "value" ~ "of" ~ tempType ~ "is" ~ tempExp ^^ { case _ ~ _ ~ tempType ~ _ ~ tempExp => new Trigger[Temperature](tempType, tempExp) }
+  def tempCondition = "value" ~ "of" ~ tempType ~ "is" ~ tempExp ^^ { case _ ~ _ ~ tempType ~ _ ~ tempExp => new Trigger[Temperature](tempType, tempExp) }
 
-  def trigger = "When" ~ (timeClause | timerClause | depthClause | distanceClause | speedClause | angleClause | percentClause | tempClause) ^^ { case _ ~ trigger => trigger }
+  def trigger = "When" ~ (timeCondition | timerCondition | depthCondition | distanceCondition | speedCondition | angleCondition | percentCondition | tempCondition) ^^ { case _ ~ trigger => trigger }
 
   abstract class OperatorParser[A<:Ordered[A]] extends CustomParser {
     def valueHole = "[0-9]{1,5}".r ^^ { case numString => numString.toInt }
-    def valueFracture = "." ~ "[0-9]{1,3}".r ^^ { case "." ~ fract => fract.toDouble / scala.math.pow(10, fract.length) }
+    def valueFracture = "" ~ "[0-9]{1,3}".r ^^ { case "" ~ fract => fract.toDouble / scala.math.pow(10, fract.length) }
     def value = valueHole ~ opt(valueFracture) ^^ { case hole ~ fract => hole.toDouble + fract.getOrElse(0.0) }
     def sign = "[-]".r ^^ { _ => -1 }
     def signedValue = opt(sign) ~ value ^^ { case sign ~ value => sign.getOrElse(1) * value }

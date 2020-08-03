@@ -28,13 +28,15 @@ lazy val frontend = project
 lazy val parserDependencies = Def.setting(Seq(
   "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
   "org.scalatest" %% "scalatest" % "3.1.0" % "test",
-  "org.typelevel"  %% "squants"  % "1.6.0"
+  "org.typelevel"  %% "squants"  % "1.6.0",
+  "com.lihaoyi" %% "upickle" % "0.9.5"
 ))
 
 lazy val parserjsDependencies = Def.setting(Seq(
   "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.2",
   "org.scalatest" %%% "scalatest" % "3.1.0" % "test",
-  "org.typelevel"  %%% "squants"  % "1.6.0"
+  "org.typelevel"  %%% "squants"  % "1.6.0",
+  "com.lihaoyi" %%% "upickle" % "0.9.5"
 ))
 
 lazy val frontendDependencies = Def.setting(Seq(
